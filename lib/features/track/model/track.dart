@@ -10,14 +10,12 @@ class Track {
   final int durationMs;
   final bool explicit;
   final int trackNumber;
-  final Album album;
   final List<ArtistSimplified> artists;
 
   Track({
     required this.id,
     required this.name,
     required this.uri,
-    required this.album,
     required this.type,
     required this.artists,
     required this.discNumber,
@@ -31,7 +29,6 @@ class Track {
       id: json["id"], 
       name: json["name"], 
       uri: json["uri"], 
-      album: Album.fromJson(json["album"]), 
       artists: (json["artists"] as List<dynamic>).map((json)=>ArtistSimplified.fromJson(json)).toList(), 
       discNumber: json["disc_number"], 
       durationMs: json["duration_ms"], 

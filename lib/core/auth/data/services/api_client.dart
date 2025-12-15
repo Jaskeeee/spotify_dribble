@@ -6,14 +6,14 @@ import 'package:spotify_dribble/core/auth/domain/model/access_token.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotify_dribble/core/auth/domain/model/header.dart';
 
-class ApiWrapper {
+class ApiClient {
   final SpotifyOauthPkce spotifyOauthPkce = SpotifyOauthPkce();
   final SpotifyAuthManager spotifyAuthManager = SpotifyAuthManager(spotifyOauthPkce:SpotifyOauthPkce());
   Future<Map<String, dynamic>> _parseJson(String body) async {
     return await jsonDecode(body) as Map<String, dynamic>;
   }
 
-  Future<T?> fetchEndpointData<T>({required String endpoint,required T Function(Map<String, dynamic>) fromJson,int retries = 3,})async{
+  Future<T?> get<T>({required String endpoint,String? query,required T Function(Map<String, dynamic>) fromJson,int retries = 3,})async{
     int attempt = 0;
     final AccessToken accessToken = await spotifyAuthManager.getValidToken();
     while (true) {
@@ -23,16 +23,19 @@ class ApiWrapper {
           scheme: "https",
           host: "api.spotify.com",
           path: endpoint,
+          query:query
         );
         final http.Response response = await http.get(url, headers: headers);
-        if(response.statusCode==204){
-          return null;
-        }
-        final Map<String, dynamic> data = await compute(
+        switch(response.statusCode){
+          case 200:
+          final Map<String, dynamic> data = await compute(
           _parseJson,
           response.body,
-        );
-        return fromJson(data);
+          );
+          return fromJson(data);
+          case 204:
+          return null;
+        }
       } catch (e) {
         if(attempt>=retries)rethrow;
         await Future.delayed(Duration(seconds: 10));
@@ -41,7 +44,7 @@ class ApiWrapper {
     }
   }
 
-  Future<void> updateEndpointData({required String endpoint,String? queryParameters,Map<String,String>? extraheaders ,Map<String,dynamic>? body,int retries=3})async{
+  Future<void> put({required String endpoint,String? queryParameters,Map<String,String>? extraheaders ,Map<String,dynamic>? body,int retries=3})async{
     int attempt = 0;
     final AccessToken accessToken = await spotifyAuthManager.getValidToken();
     while(true){
@@ -66,7 +69,7 @@ class ApiWrapper {
       }
     }
   }
-  Future<void> postDataOnEndpoint({required String endpoint,String? queryParameters,Map<String,dynamic>? body,int retries=3})async{
+  Future<void> post({required String endpoint,String? queryParameters,Map<String,dynamic>? body,int retries=3})async{
     int attempt = 0;
     final AccessToken accessToken = await spotifyAuthManager.getValidToken();
     while(true){

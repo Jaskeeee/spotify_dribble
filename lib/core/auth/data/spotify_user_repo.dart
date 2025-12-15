@@ -1,14 +1,14 @@
-import 'package:spotify_dribble/core/auth/data/services/api_wrapper.dart';
+import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/auth/domain/model/spotify_user.dart';
 import 'package:spotify_dribble/core/auth/domain/repo/user_repo.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
 
 class SpotifyUserRepo implements UserRepo{
-  final ApiWrapper _apiWrapper = ApiWrapper();
+  final ApiClient _apiClient = ApiClient();
   @override
   Future<SpotifyUser?> getCurrentUserProfile()async{
     try{
-      final SpotifyUser? user = await _apiWrapper.fetchEndpointData(
+      final SpotifyUser? user = await _apiClient.get(
         endpoint: "/v1/me",
         fromJson: (json)=>SpotifyUser.fromJson(json)
       );

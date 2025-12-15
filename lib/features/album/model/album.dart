@@ -9,7 +9,7 @@ class Album {
   final String type;
   final List<ImageModel> images;
   final List<ArtistSimplified> artists;
-  final DateTime releaseDate;
+  final String releaseDate;
   final String releaseDatePrecision;
   final String uri;
   Album({
@@ -30,7 +30,7 @@ class Album {
       name: json["name"], 
       albumType: json["album_type"], 
       images: (json["images"] as List<dynamic>).map((json)=>ImageModel.fromJson(json)).toList(), 
-      releaseDate:DateTime.parse(json["release_date"]), 
+      releaseDate:json["release_date"], 
       uri: json["uri"], 
       type: json["type"],
       releaseDatePrecision: json["release_date_precision"], 
@@ -39,3 +39,4 @@ class Album {
     );  
   }
 }
+

@@ -4,6 +4,7 @@ import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
 
 abstract class PlayerRepo {
   Future<List<Device>> getavailableDevices();
+  Future<void> syncDevice();
   Future<void> transferPlayback({required List<String> deviceIds,bool? play});
   Future<PlaybackState?> getPlaybackState();
   Future<void> pause({String? deviceId});

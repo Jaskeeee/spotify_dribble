@@ -1,4 +1,7 @@
-import 'package:spotify_dribble/core/auth/data/services/api_wrapper.dart';
+import 'dart:io';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
@@ -6,13 +9,13 @@ import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
 import 'package:spotify_dribble/core/player/domain/repo/player_repo.dart';
 
 class SpotifyPlayerRepo implements PlayerRepo {
-  final ApiWrapper _apiWrapper = ApiWrapper();
+  final ApiClient _apiClient = ApiClient();
   final String baseEndpoint = "/v1/me/player";
   @override
   Future<List<Device>> getavailableDevices() async {
     try {
-      final List<dynamic>? data = await _apiWrapper.fetchEndpointData(
-        endpoint: "${baseEndpoint}devices",
+      final List<dynamic>? data = await _apiClient.get(
+        endpoint: "$baseEndpoint/devices",
         fromJson: (json) => (json["devices"] as List<dynamic>),
       );
       return data!.map((json) => Device.fromJson(json)).toList();
@@ -24,20 +27,41 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<PlaybackState?> getPlaybackState()async{
     try{
-      final PlaybackState? playbackState = await _apiWrapper.fetchEndpointData(
+      final PlaybackState? playbackState = await _apiClient.get(
         endpoint: baseEndpoint, 
         fromJson: (json)=>PlaybackState.fromJson(json)
       );
-      if(playbackState!=null){
-        return playbackState;
-      }
-      else{
-        return null;
-      }
+      return playbackState;
     }catch(e){
       throw SpotifyAPIError(message:e.toString());
     }
   }
+
+  @override
+  Future<void> syncDevice()async{
+    try{
+      final PlaybackState? playbackState = await getPlaybackState();
+      final List<Device> devices = await getavailableDevices();
+      final String deviceName= dotenv.get("SPOTIFY_DEVICE_NAME");
+      if(playbackState==null||playbackState.device.name!=deviceName){
+        for(var device in devices){
+          if(device.name==deviceName){
+            try{
+              await transferPlayback(deviceIds:[device.id],play:true);
+            }catch(e){
+              Process.run("systemctl", ['--user','restart','spotifyd.service']);
+              await syncDevice();
+            }
+          }
+        }      
+      }
+    }
+    catch(e){
+      throw SpotifyAPIError(message: e.toString());
+    }
+  }
+
+
 
   @override
   Future<void> next({String? deviceId}) async {
@@ -45,7 +69,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
-      await _apiWrapper.postDataOnEndpoint(
+      await _apiClient.post(
         endpoint: "$baseEndpoint/next",
         queryParameters: queryParameters,
       );
@@ -60,7 +84,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint: '$baseEndpoint/pause',
         queryParameters: queryParameters,
       );
@@ -75,7 +99,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
-      await _apiWrapper.postDataOnEndpoint(
+      await _apiClient.post(
         endpoint: '$baseEndpoint/previous',
         queryParameters: queryParameters,
       );
@@ -95,7 +119,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
             ? {"device_id": deviceId, "state": state}
             : {"state": state},
       ).query;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint: "$baseEndpoint/repeat",
         queryParameters: queryParameters,
       );
@@ -110,7 +134,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint: '$baseEndpoint/play',
         queryParameters: queryParameters,
         extraheaders: {"Content-Type": "application/json"},
@@ -128,7 +152,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
             ? {"device_id": deviceId, "position_ms": positionMs.toString()}
             : {"position_ms": positionMs.toString()},
       ).query;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint: '$baseEndpoint/seek',
         queryParameters: queryParameters,
       );
@@ -145,7 +169,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
         ?{"device_id":deviceId,"state":state.toString()}
         :{"state":state.toString()}
       ).query;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint:"$baseEndpoint/shuffle",
         queryParameters: queryParameters
       );
@@ -161,7 +185,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
       final Map<String,dynamic> body = play!=null
         ?{"device_ids":deviceIds,"play":play}
         :{"device_ids":deviceIds};
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint:baseEndpoint,
         body: body,
         extraheaders: {"Content-Type":"application/json"} 
@@ -179,7 +203,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
             ? {"device_id": deviceId, "volume_percent": volume.toString()}
             : {"volume_percent": volume.toString()},
       ).query;
-      await _apiWrapper.updateEndpointData(
+      await _apiClient.put(
         endpoint: "${baseEndpoint}volume",
         queryParameters: queryParameters,
       );
@@ -196,7 +220,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
             ? {"device_id": deviceId, "uri": uri}
             : {"uri": uri},
       ).query;
-      await _apiWrapper.postDataOnEndpoint(
+      await _apiClient.post(
         endpoint: '${baseEndpoint}queue',
         queryParameters: queryParameters,
       );
