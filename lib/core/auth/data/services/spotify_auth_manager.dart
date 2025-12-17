@@ -12,21 +12,22 @@ class SpotifyAuthManager {
   Future<AccessToken> getValidToken()async{
     try{
       final String? expiresIn = await _secureStorage.read(key: "expires_in");
+      if(expiresIn==null){
+        await spotifyOauthPkce.requestUserAuthorization();
+        final AccessToken accessToken = await spotifyOauthPkce.requestAccessToken();
+        return accessToken;
+      }
       if(DateTime.now().isAfter(DateTime.parse(expiresIn!))){
-        final AccessToken? accessToken = await spotifyOauthPkce.refreshAccessToken();   
-        if(accessToken!=null){
-          return accessToken;
-        }else{
-          await spotifyOauthPkce.requestUserAuthorization();
-          return await getValidToken();
-        }
+        final AccessToken accessToken = await spotifyOauthPkce.refreshAccessToken();   
+        return accessToken;
       }else{
         final String? accessToken = await _secureStorage.read(key:"access_token");
         final String? refreshToken = await _secureStorage.read(key: "refresh_token");
+        final String? newExpiresIn = await _secureStorage.read(key:"expires_in"); 
         return AccessToken(
           token: accessToken!, 
           refreshToken: refreshToken!, 
-          expiresIn: DateTime.parse(expiresIn)
+          expiresIn: DateTime.parse(newExpiresIn!)
         );
       }
     }catch(e){

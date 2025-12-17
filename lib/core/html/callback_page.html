@@ -6,47 +6,67 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Spotify Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: #000000;
+            font-family: 'Roboto', sans-serif;
+            overflow: hidden; 
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .center-div {
+            text-align: center;
+        }
+        
+        .img-style {
+            margin-bottom: 20px;
+        }
+        
+        .authenticated-h1 {
+            color: white;
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        
+        .subheader-div h2 {
+            color: #b3b3b3;
+            font-weight: 400;
+            font-size: 1.2rem;
+        }
+    </style>
 </head>
-<style>
-    html,body{
-        margin: 0;                     
-        height: 100vh;                 
-        display: flex;
-        justify-content: center;       
-        align-items: center;           
-        background-color: black;
-        font-family: 'Roboto';
-    }
-    .h1-div{
-        display:block;
-        text-align: center;
-        justify-content: center;
-    }
-    .authenticated-h1{
-        color: white;
-        justify-content: center;
-        padding-left:100px;
-    }
-    .subheader-div{
-        justify-content: center;
-        text-align: center;
-        color: grey;
-    }
-    .img-style{
-        margin: 0;
-        align-items: center;
-    }
-</style>
 <body>
     <div class="center-div">
         <div class="h1-div">
-            <img  class="img-style" src="img/Spotify_Primary_Logo_RGB_White.png" alt="img/Spotify_Primary_Logo_RGB_White.png" width="100" height="100">
-            <h1 class="authenticated-h1">Successfully Authenticated With Spotify!</h1>
+            <img class="img-style" 
+                 src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png" 
+                 alt="Spotify Logo" 
+                 width="200" 
+                 height="60">
+            <h1 class="authenticated-h1">Successfully Authenticated!</h1>
         </div>
         <div class="subheader-div">
-            <h2>You can close this window now</h2>
+            <h2>This window will automatically in 5s seconds!</h2>
         </div>
     </div>
+    
+    <script>
+        setTimeout(() => {
+            window.close();
+        }, 5000);
+    </script>
 </body>
 </html>

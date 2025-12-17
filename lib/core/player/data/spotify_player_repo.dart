@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
@@ -7,6 +6,7 @@ import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
 import 'package:spotify_dribble/core/player/domain/repo/player_repo.dart';
+import 'package:spotify_dribble/features/track/model/track.dart';
 
 class SpotifyPlayerRepo implements PlayerRepo {
   final ApiClient _apiClient = ApiClient();
@@ -40,6 +40,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> syncDevice()async{
     try{
+      Process.run('systemctl',['--user','start','spotifyd.service']);
       final PlaybackState? playbackState = await getPlaybackState();
       final List<Device> devices = await getavailableDevices();
       final String deviceName= dotenv.get("SPOTIFY_DEVICE_NAME");
@@ -60,8 +61,6 @@ class SpotifyPlayerRepo implements PlayerRepo {
       throw SpotifyAPIError(message: e.toString());
     }
   }
-
-
 
   @override
   Future<void> next({String? deviceId}) async {
@@ -228,4 +227,50 @@ class SpotifyPlayerRepo implements PlayerRepo {
       throw SpotifyAPIError(message: e.toString());
     }
   }
+
+  @override
+  Future<List<Track>> getRecentlyPlayedTracks({int? limit})async{
+    try{
+      final Map<String,dynamic> queryParameters ={};
+      if(limit!=null){
+        queryParameters["limit"]=limit.toString();
+      }
+      final String query=Uri(
+        queryParameters: queryParameters.isNotEmpty?queryParameters:null
+      ).query;
+      final tracksData = await _apiClient.get(
+        endpoint: "/v1/me/player/recently-played", 
+        fromJson: (json)=>(json["items"] as List<dynamic>),
+        query: query
+      );
+      if(tracksData==null){
+        throw [];
+      }
+      return tracksData.map((json)=>Track.fromJson(json["track"])).toList();
+    }
+    catch(e){
+      throw SpotifyAPIError(message: e.toString());
+    }
+  }
+  
+@override
+Future<void> startPlayback({required List<String> uris, String? deviceId}) async {
+  try {
+    final Map<String, dynamic> queryParameters = {};
+    if (deviceId != null) {
+      queryParameters["device_id"] = deviceId;
+    }
+    final Map<String, dynamic> body = {"uris": uris};
+    
+    await _apiClient.put(
+      endpoint: '$baseEndpoint/play',
+      body: body,
+      extraheaders: {"Content-Type": "application/json"},
+      queryParameters: Uri(queryParameters: queryParameters.isNotEmpty ? queryParameters : null).query 
+    );
+  } catch (e) {
+    throw SpotifyAPIError(message: e.toString());
+  }
+}
+  
 }

@@ -1,6 +1,5 @@
 import 'package:spotify_dribble/features/episode/model/episode.dart';
 import 'package:spotify_dribble/features/track/model/track.dart';
-
 class PlayerItem {
   final Track? track;
   final Episode? episode;

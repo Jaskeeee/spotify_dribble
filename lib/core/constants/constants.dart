@@ -10,6 +10,7 @@ final Map<String,String> contentHeader = {
 
 final List<String> scopes = [
   "user-read-private",
+  "user-follow-read",
   "user-read-email",
   "user-library-read",
   "user-library-modify",

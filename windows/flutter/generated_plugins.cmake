@@ -4,11 +4,8 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   bitsdojo_window_windows
-  desktop_webview_window
   flutter_secure_storage_windows
-  fvp
   url_launcher_windows
-  window_to_front
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

@@ -34,7 +34,7 @@ class SpotifyOauthPkce implements AuthRepo{
   }
 
   @override
-  Future<AccessToken?>refreshAccessToken()async{
+  Future<AccessToken>refreshAccessToken()async{
     try{
       final String? refreshToken = await _storage.read(key: "refresh_token");
       final Map<String,String> queryParameters = {
@@ -52,7 +52,8 @@ class SpotifyOauthPkce implements AuthRepo{
         headers: contentHeader,
         body: queryParameters,
       );
-      if(response.statusCode==200){
+      switch(response.statusCode){
+        case 200:
         final responseBody = jsonDecode(response.body);
         final String accessToken = responseBody["access_token"];
         final String refreshToken = responseBody["refresh_token"];
@@ -67,8 +68,28 @@ class SpotifyOauthPkce implements AuthRepo{
           refreshToken: refreshToken, 
           expiresIn: expiresIn
         );
-      }else{
-        return null;
+        case 400:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 401:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 403:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 404:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 408:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 429:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 500:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 502:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 503:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 504:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        default:
+        throw SpotifyAuthError(message: "Unkown Error Occurred while refreshing access Token");
       }
     }catch(e){
       throw SpotifyError(message:e.toString());
@@ -93,11 +114,8 @@ class SpotifyOauthPkce implements AuthRepo{
       path: '/authorize',
       queryParameters: params,
     );
-    // need to handle this better :flutter_linux_webview
-    if (await canLaunchUrl(authUrl)) {
-      launchUrl(authUrl);
-    } else {
-      throw SpotifyError(message: "Failed to open Link: The Authorization URL cannot be launched");
+    if(!await launchUrl(authUrl)){
+      throw SpotifyError(message: "Couldn't Launch Default browser for Authentication");
     }
     final HttpServer server = await HttpServer.bind(
       InternetAddress.loopbackIPv4,
@@ -113,22 +131,30 @@ class SpotifyOauthPkce implements AuthRepo{
     server.listen((HttpRequest request) async {
       try {
         final Uri uri = request.uri;
-        if (uri.path == "/callback") {
+        if (uri.path == "/callback" && !uri.queryParameters.containsKey("error")) {
           final code = uri.queryParameters["code"];
           request.response.statusCode = 200;
           request.response.headers.contentType = ContentType.html;
           final File file = File("lib/core/html/callback_page.html");
-          file.openRead().pipe(request.response);
+          await file.openRead().pipe(request.response);
           if (!completer.isCompleted) {
             completer.complete(code);
             timer.cancel();
-            Future.delayed(Duration(seconds:10));
+            await Future.delayed(Duration(seconds:10));
             await server.close(force:true);
           }
         } else {
+          if(uri.queryParameters.containsValue("access_denied")){
+            request.response.statusCode=302;
+            request.response.headers.contentType=ContentType.html;
+            final File file = File("lib/core/html/access_denied.html");
+            await file.openRead().pipe(request.response);
+            throw SpotifyAuthError(message:"Access Denied",statusCode:request.response.statusCode,);
+          }
           request.response.statusCode = 404;
           await request.response.close();
           server.close(force: true);
+          throw SpotifyAuthError(message: "Failed User Authorization");
         }
       } catch (e) {
         if(!completer.isCompleted){
@@ -150,7 +176,7 @@ class SpotifyOauthPkce implements AuthRepo{
   }
 
   @override
-  Future<AccessToken?>requestAccessToken()async{
+  Future<AccessToken>requestAccessToken()async{
     try{
       final String? codeVerifier = await _storage.read(key: "code_verifier");
       final String? authCode = await _storage.read(key: "auth_code");
@@ -171,13 +197,14 @@ class SpotifyOauthPkce implements AuthRepo{
         headers:contentHeader,
         body: queryParameters 
       );
-      if(response.statusCode==200){
+      switch(response.statusCode){
+        case 200:
         final responseBody = jsonDecode(response.body);
         final String accessToken = responseBody["access_token"];
         final String refreshToken = responseBody["refresh_token"];
         final int tokenExpiry = (responseBody["expires_in"]-300);
-        final DateTime dateTime = DateTime.now().toUtc();
-        final DateTime expiresIn = dateTime.add(Duration(seconds:tokenExpiry));
+        final DateTime dateTime = DateTime.now();
+        final DateTime expiresIn = dateTime.add(Duration(seconds: tokenExpiry));
         await _storage.write(key: "access_token", value:accessToken);
         await _storage.write(key: "refresh_token", value: refreshToken);
         await _storage.write(key: "expires_in", value: expiresIn.toString());
@@ -186,9 +213,30 @@ class SpotifyOauthPkce implements AuthRepo{
           refreshToken: refreshToken, 
           expiresIn: expiresIn
         );
-      }else{
-        return null;
+        case 400:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 401:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 403:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 404:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 408:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 429:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 500:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 502:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 503:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        case 504:
+        throw SpotifyAuthError(message:response.body,statusCode:response.statusCode);
+        default:
+        throw SpotifyAuthError(message: "Unkown Error Occurred while requesting access Token");
       }
+
     }
     catch(e){
       throw SpotifyError(message: e.toString());

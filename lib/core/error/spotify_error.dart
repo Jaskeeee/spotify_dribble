@@ -17,3 +17,8 @@ class SpotifyAuthError extends SpotifyError{
 class SpotifyAPIError extends SpotifyError{
   SpotifyAPIError({required super.message,super.details,super.statusCode}); 
 }
+
+class SpotifyRateLimitError extends SpotifyError{
+  final int retryAfter;
+  SpotifyRateLimitError({required this.retryAfter, required super.message});
+}

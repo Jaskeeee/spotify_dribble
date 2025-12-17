@@ -1,5 +1,5 @@
 import 'package:spotify_dribble/core/models/image_model.dart';
-import 'package:spotify_dribble/features/artist/model/artist_simplified.dart';
+import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
 
 class Album {
   final String id;

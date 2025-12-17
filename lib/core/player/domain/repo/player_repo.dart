@@ -1,6 +1,7 @@
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
+import 'package:spotify_dribble/features/track/model/track.dart';
 
 abstract class PlayerRepo {
   Future<List<Device>> getavailableDevices();
@@ -16,4 +17,6 @@ abstract class PlayerRepo {
   Future<void> volume({String? deviceId,required int volume});
   Future<void> repeatMode({String? deviceId,required RepeatState state});
   Future<void> queue({String? deviceId,required String uri}); 
+  Future<List<Track>> getRecentlyPlayedTracks({int? limit});
+  Future<void> startPlayback({required List<String> uris,String? deviceId});
 }
