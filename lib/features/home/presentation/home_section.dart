@@ -1,13 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_dribble/core/auth/data/spotify_oauth_pkce.dart';
 import 'package:spotify_dribble/core/auth/data/spotify_user_repo.dart';
 import 'package:spotify_dribble/core/components/sections/player_section.dart';
 import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
+import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/features/album/data/spotify_album_repo.dart';
 import 'package:spotify_dribble/features/album/model/album.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
+import 'package:spotify_dribble/features/track/data/spotify_track_repo.dart';
 import 'package:spotify_dribble/features/track/model/track.dart';
 import 'package:spotify_dribble/features/track/model/track_simplified.dart';
 
@@ -23,6 +26,7 @@ class _HomeSectionState extends State<HomeSection> {
   final SpotifyUserRepo spotifyUserRepo = SpotifyUserRepo();
   final SpotifyPlayerRepo spotifyPlayerRepo = SpotifyPlayerRepo();
   final SpotifyAlbumRepo albumRepo = SpotifyAlbumRepo();
+  final SpotifyTrackRepo trackRepo = SpotifyTrackRepo();
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -34,11 +38,11 @@ class _HomeSectionState extends State<HomeSection> {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(50),
                 border: Border.all(
                   style: BorderStyle.solid,
-                  color: Colors.grey.shade400.withValues(alpha: 0.3),
+                  color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.3),
                 ),
               ),
               margin: EdgeInsets.fromLTRB(150, 100, 150, 100),
@@ -209,7 +213,7 @@ class _HomeSectionState extends State<HomeSection> {
                       final List<TrackSimplified> tracks = await albumRepo
                           .getAlbumTracks(id: id);
                       for (TrackSimplified track in tracks) {
-                        print(track.name);
+                        print("Name:${track.name} Id: ${track.id}");
                       }
                     },
                     child: Text(
@@ -260,6 +264,30 @@ class _HomeSectionState extends State<HomeSection> {
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
+                  TextButton(
+                    onPressed: ()=>context.read<PlayerCubit>().getPlaybackState(), 
+                    child: Text(
+                      "Get playback state",
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                    )
+                  ),
+                  TextButton(
+                    onPressed: ()async{
+                      final List<Track> tracks = await trackRepo.getUserSavedTracks(limit:50,offset:49);
+                      print(tracks.length);
+                      for(Track track in tracks){
+                        print("Name ${track.name} Album: ${track.album.name}");
+                      }
+                    }, 
+                    child: Text(
+                      "Get My Tracksss",
+                      style: TextStyle(
+                        color: Colors.white
+                      ),
+                    )
+                  )
                 ],
               ),
             ),

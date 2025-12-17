@@ -8,7 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:spotify_dribble/core/auth/domain/model/access_token.dart';
 import 'package:spotify_dribble/core/auth/domain/repo/auth_repo.dart';
-import 'package:spotify_dribble/core/constants/constants.dart';
+import 'package:spotify_dribble/core/constants/auth_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotify_dribble/core/error/spotify_error.dart';
 import 'package:url_launcher/url_launcher.dart';

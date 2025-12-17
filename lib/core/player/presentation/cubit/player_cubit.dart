@@ -5,11 +5,13 @@ import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dar
 
 class PlayerCubit extends Cubit<PlayerStates>{
   final SpotifyPlayerRepo spotifyPlayerRepo;
+
   PlayerCubit({
     required this.spotifyPlayerRepo,
   }):super(PlayerInitial()){
     _syncSpotifyd();
   }
+
   Future<void> _syncSpotifyd()async{
     try{
       await spotifyPlayerRepo.syncDevice();
@@ -18,6 +20,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message:e.toString()));
     }
   }
+
   Future<void> getPlaybackState()async{
     try{
       final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
@@ -38,6 +41,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message:e.toString()));
     }
   }
+
   Future<void>resume({String? deviceId})async{
     try{
       await spotifyPlayerRepo.resume(deviceId: deviceId);
@@ -48,6 +52,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message:e.toString()));
     }
   }
+
   Future<void>next({String? deviceId})async{
     try{
       await spotifyPlayerRepo.next(deviceId: deviceId);
@@ -58,6 +63,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message:e.toString()));
     }
   }
+  
   Future<void>previous({String? deviceId})async{
     try{
       await spotifyPlayerRepo.previous(deviceId:deviceId);

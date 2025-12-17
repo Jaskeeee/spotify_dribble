@@ -1,18 +1,17 @@
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
+import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
 import 'package:spotify_dribble/features/album/model/album.dart';
 import 'package:spotify_dribble/features/album/repo/album_repo.dart';
-import 'package:spotify_dribble/features/track/model/track.dart';
 import 'package:spotify_dribble/features/track/model/track_simplified.dart';
 
 class SpotifyAlbumRepo implements AlbumRepo{
-  final String baseEndpoint = "/v1/albums";
   final ApiClient _apiClient = ApiClient();
   @override
   Future<Album> getAlbum({required String id})async{
     try{
       final album = await _apiClient.get(
-        endpoint: "$baseEndpoint/id", 
+        endpoint: "$baseAlbumEndpoint/id", 
         fromJson: ((json)=>Album.fromJson(json))
       );
       if(album==null){
@@ -38,11 +37,10 @@ class SpotifyAlbumRepo implements AlbumRepo{
         queryParameters: queryParameters.isNotEmpty?queryParameters:null
       ).query;
       final tracksData = await _apiClient.get(
-        endpoint: "$baseEndpoint/$id/tracks", 
+        endpoint: "$baseAlbumEndpoint/$id/tracks", 
         fromJson: (json)=>(json["items"] as List<dynamic>),
         query: query
       );
-      print(tracksData);
       if(tracksData==null){
         return [];
       }
@@ -57,13 +55,11 @@ class SpotifyAlbumRepo implements AlbumRepo{
   Future<List<Album>> getAlbums({required List<String> ids})async{
     try{
       final String queryParameters = Uri(queryParameters:{"ids":ids.join(',')}).query;
-      print(queryParameters);
       final albumsData = await _apiClient.get(
-        endpoint: baseEndpoint, 
+        endpoint: baseAlbumEndpoint, 
         fromJson: (json)=>(json["albums"] as List<dynamic>),
         query: queryParameters
       );
-      print(albumsData);
       if(albumsData==null){
         throw SpotifyAPIError(message: "The Albums couldn't be loaded");
       }

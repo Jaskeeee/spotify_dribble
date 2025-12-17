@@ -17,7 +17,7 @@ class SpotifyAuthManager {
         final AccessToken accessToken = await spotifyOauthPkce.requestAccessToken();
         return accessToken;
       }
-      if(DateTime.now().isAfter(DateTime.parse(expiresIn!))){
+      if(DateTime.now().isAfter(DateTime.parse(expiresIn))){
         final AccessToken accessToken = await spotifyOauthPkce.refreshAccessToken();   
         return accessToken;
       }else{

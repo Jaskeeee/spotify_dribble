@@ -32,6 +32,7 @@ class _PlaybackSectionState extends State<PlaybackSection> {
             if(state.playbackState!=null){
               if(state.playbackState!.playerItem!.isTrack){
                 final Track track = state.playbackState!.playerItem!.track!;
+                final Duration duration = Duration(milliseconds: state.playbackState!.playerItem!.track!.durationMs); 
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: ClipRRect(
@@ -58,6 +59,14 @@ class _PlaybackSectionState extends State<PlaybackSection> {
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.grey
+                    ),
+                  ),
+                  trailing: Text(
+                    "${duration.inMinutes}:${(duration.inSeconds%60).toString().padLeft(2,'0')}",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize:18
                     ),
                   ),
                 );

@@ -1,5 +1,5 @@
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
-import 'package:spotify_dribble/features/track/model/track_simplified.dart';
+import 'package:spotify_dribble/features/track/model/track.dart';
 
 class TopItem {
   final Artist? artist;

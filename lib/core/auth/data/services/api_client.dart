@@ -6,6 +6,7 @@ import 'package:spotify_dribble/core/auth/data/spotify_oauth_pkce.dart';
 import 'package:spotify_dribble/core/auth/domain/model/access_token.dart';
 import 'package:http/http.dart' as http;
 import 'package:spotify_dribble/core/auth/domain/model/header.dart';
+import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
 
 class ApiClient {
@@ -40,7 +41,7 @@ class ApiClient {
       final Map<String,String> header = Header(accessToken: accessToken.token).toMap();
       final url = Uri(
         scheme: "https",
-        host: "api.spotify.com",
+        host: baseApiUrl,
         path: endpoint,
         query: query
       );
@@ -66,7 +67,7 @@ class ApiClient {
       final Map<String,String> header = Header(accessToken: accessToken.token,extraHeaders:extraheaders).toMap();
       final url = Uri(
         scheme: "https",
-        host: "api.spotify.com",
+        host: baseApiUrl,
         path: endpoint,
         query: queryParameters
       );
@@ -91,7 +92,7 @@ class ApiClient {
         final Map<String,String> headers= Header(accessToken: accessToken.token).toMap();
         final Uri url = Uri(
           scheme: "https",
-          host: "api.spotify.com",
+          host: baseApiUrl,
           path: endpoint,
           query: queryParameters
         );

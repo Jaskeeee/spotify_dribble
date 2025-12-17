@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spotify_dribble/core/components/sections/window_title_bar.dart';
-import 'package:spotify_dribble/core/constants/constants.dart';
+import 'package:spotify_dribble/core/constants/app_constants.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
@@ -21,7 +21,7 @@ class _AuthPageState extends State<AuthPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(40),
               ),
-              child: Image.asset(lighLogoPath, width: 40, height: 40),
+              child: Image.asset(lightLogoPath, width: 40, height: 40),
             ),
           ),
           Expanded(
