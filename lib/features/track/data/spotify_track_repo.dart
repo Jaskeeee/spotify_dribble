@@ -1,8 +1,8 @@
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
-import 'package:spotify_dribble/features/track/model/track.dart';
-import 'package:spotify_dribble/features/track/repo/track_repo.dart';
+import 'package:spotify_dribble/features/track/domain/model/track.dart';
+import 'package:spotify_dribble/features/track/domain/repo/track_repo.dart';
 
 class SpotifyTrackRepo implements TrackRepo{
   final ApiClient _apiClient = ApiClient();
@@ -47,5 +47,10 @@ class SpotifyTrackRepo implements TrackRepo{
     }catch(e){
       throw SpotifyAPIError(message:e.toString());
     }
+  }
+  
+  @override
+  Future<List<bool>> checkUserSavedTracks({required List<String> ids})async{
+    throw UnimplementedError();
   }
 }

@@ -1,5 +1,6 @@
 class Device {
   final String id;
+  final String type;
   final bool isActive;
   final bool isPrivateSession;
   final String name;
@@ -9,6 +10,7 @@ class Device {
   Device({
     required this.id,
     required this.name,
+    required this.type,
     required this.isActive,
     required this.isPrivateSession,
     required this.supportsVolume,
@@ -19,6 +21,7 @@ class Device {
     return Device(
       id: json["id"], 
       name: json["name"], 
+      type: json["type"],
       isActive: json["is_active"], 
       isPrivateSession: json["is_private_session"], 
       supportsVolume: json["supports_volume"], 

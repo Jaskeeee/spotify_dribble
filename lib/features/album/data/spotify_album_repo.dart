@@ -1,9 +1,9 @@
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
-import 'package:spotify_dribble/features/album/model/album.dart';
-import 'package:spotify_dribble/features/album/repo/album_repo.dart';
-import 'package:spotify_dribble/features/track/model/track_simplified.dart';
+import 'package:spotify_dribble/features/album/domain/model/album.dart';
+import 'package:spotify_dribble/features/album/domain/repo/album_repo.dart';
+import 'package:spotify_dribble/features/track/domain/model/track_simplified.dart';
 
 class SpotifyAlbumRepo implements AlbumRepo{
   final ApiClient _apiClient = ApiClient();

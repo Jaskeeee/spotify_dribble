@@ -85,29 +85,44 @@ class ApiClient {
     });
   }
   Future<void> post({required String endpoint,String? queryParameters,Map<String,dynamic>? body,int retries=3})async{
-    int attempt = 0;
-    final AccessToken accessToken = await spotifyAuthManager.getValidToken();
-    while(true){
-      try{
-        final Map<String,String> headers= Header(accessToken: accessToken.token).toMap();
-        final Uri url = Uri(
-          scheme: "https",
-          host: baseApiUrl,
-          path: endpoint,
-          query: queryParameters
-        );
-        await http.post(
-          url,
-          headers: headers,
-          body: body!=null ?jsonEncode(body): null
-        );
-        return;
-      }
-      catch(e){
-        if(attempt>=retries)rethrow;
-        await Future.delayed(Duration(seconds: 10));
-        attempt++;
-      }
-    }
+    // int attempt = 0;
+    return retry(()async{
+      final AccessToken accessToken = await spotifyAuthManager.getValidToken();
+      final Map<String,String> headers= Header(accessToken: accessToken.token).toMap();
+      final Uri url = Uri(
+        scheme: "https",
+        host: baseApiUrl,
+        path: endpoint,
+        query: queryParameters
+      );
+      await http.post(
+        url,
+        headers: headers,
+        body:body!=null?jsonEncode(body):null
+      );
+      return;
+    });
+    // while(true){
+    //   try{
+    //     final Map<String,String> headers= Header(accessToken: accessToken.token).toMap();
+    //     final Uri url = Uri(
+    //       scheme: "https",
+    //       host: baseApiUrl,
+    //       path: endpoint,
+    //       query: queryParameters
+    //     );
+    //     await http.post(
+    //       url,
+    //       headers: headers,
+    //       body: body!=null ?jsonEncode(body): null
+    //     );
+    //     return;
+    //   }
+    //   catch(e){
+    //     if(attempt>=retries)rethrow;
+    //     await Future.delayed(Duration(seconds: 10));
+    //     attempt++;
+    //   }
+    // }
   }
 }

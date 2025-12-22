@@ -8,11 +8,11 @@ import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/features/album/data/spotify_album_repo.dart';
-import 'package:spotify_dribble/features/album/model/album.dart';
+import 'package:spotify_dribble/features/album/domain/model/album.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
 import 'package:spotify_dribble/features/track/data/spotify_track_repo.dart';
-import 'package:spotify_dribble/features/track/model/track.dart';
-import 'package:spotify_dribble/features/track/model/track_simplified.dart';
+import 'package:spotify_dribble/features/track/domain/model/track.dart';
+import 'package:spotify_dribble/features/track/domain/model/track_simplified.dart';
 
 class HomeSection extends StatefulWidget {
   const HomeSection({super.key});

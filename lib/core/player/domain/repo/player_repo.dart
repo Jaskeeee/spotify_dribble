@@ -1,7 +1,7 @@
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
-import 'package:spotify_dribble/features/track/model/track.dart';
+import 'package:spotify_dribble/features/track/domain/model/track.dart';
 
 abstract class PlayerRepo {
   Future<List<Device>> getavailableDevices();

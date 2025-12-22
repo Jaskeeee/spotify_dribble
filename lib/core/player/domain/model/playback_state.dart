@@ -29,5 +29,4 @@ class PlaybackState {
       timestamp: json["timestamp"]
     );      
   }
-
 }

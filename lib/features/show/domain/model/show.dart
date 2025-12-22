@@ -1,5 +1,5 @@
 import 'package:spotify_dribble/core/models/image_model.dart';
-import 'package:spotify_dribble/features/episode/model/episodes.dart';
+import 'package:spotify_dribble/features/episode/domain/model/episodes.dart';
 
 class Show {
   final String id;

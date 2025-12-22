@@ -1,7 +1,7 @@
 class ImageModel {
   final String imageUrl;
-  final int height;
-  final int width;
+  final int? height;
+  final int? width;
   ImageModel({
     required this.imageUrl,
     required this.height,

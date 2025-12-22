@@ -15,6 +15,8 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void> _syncSpotifyd()async{
     try{
       await spotifyPlayerRepo.syncDevice();
+      final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
+      emit(PlayerLoaded(playbackState: playbackState));
     }
     catch(e){
       emit(PlayerError(message:e.toString()));
@@ -75,4 +77,34 @@ class PlayerCubit extends Cubit<PlayerStates>{
     }
   }
 
+  Future<void>transferPlayback({required List<String> ids,bool? play})async{
+    try{
+      await spotifyPlayerRepo.transferPlayback(deviceIds:ids,play:play);
+      await Future.delayed(Duration(seconds:2));
+      await getPlaybackState();
+    }
+    catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
+
+  Future<void>startPlayback({required List<String> uris,String? deviceId})async{
+    try{
+      await spotifyPlayerRepo.startPlayback(uris: uris,deviceId:deviceId);
+      await Future.delayed(Duration(seconds:1));
+      await getPlaybackState();
+    }catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
+
+  Future<void>volume({String? deviceId,required int volume})async{
+    try{
+      await spotifyPlayerRepo.volume(volume: volume,deviceId:deviceId);
+      await Future.delayed(Duration(seconds: 1));
+      await getPlaybackState();
+    }catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
 }

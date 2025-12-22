@@ -1,6 +1,6 @@
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
-import 'package:spotify_dribble/features/album/model/album.dart';
+import 'package:spotify_dribble/features/album/domain/model/album.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
 import 'package:spotify_dribble/features/artist/domain/repo/artist_repo.dart';
 

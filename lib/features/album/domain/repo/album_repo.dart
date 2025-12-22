@@ -1,5 +1,5 @@
-import 'package:spotify_dribble/features/album/model/album.dart';
-import 'package:spotify_dribble/features/track/model/track_simplified.dart';
+import 'package:spotify_dribble/features/album/domain/model/album.dart';
+import 'package:spotify_dribble/features/track/domain/model/track_simplified.dart';
 
 abstract class AlbumRepo {
   Future<Album> getAlbum({required String id});

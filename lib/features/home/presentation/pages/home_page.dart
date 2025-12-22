@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:spotify_dribble/core/components/sections/window_title_bar.dart';
-import 'package:spotify_dribble/features/home/presentation/home_section.dart';
+import 'package:spotify_dribble/features/home/presentation/pages/browse_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,11 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
-  int count = 0;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+  return Scaffold(
       backgroundColor: Colors.transparent,
       body: Column(
         children: [
@@ -31,7 +29,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Expanded(child:HomeSection())
+          BrowsePage(),
         ],
       ),
     );

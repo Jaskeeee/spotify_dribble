@@ -7,7 +7,7 @@ import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
 import 'package:spotify_dribble/core/player/domain/repo/player_repo.dart';
-import 'package:spotify_dribble/features/track/model/track.dart';
+import 'package:spotify_dribble/features/track/domain/model/track.dart';
 
 class SpotifyPlayerRepo implements PlayerRepo {
   final ApiClient _apiClient = ApiClient();
@@ -37,18 +37,34 @@ class SpotifyPlayerRepo implements PlayerRepo {
     }
   }
 
+  Future<void> checkSpotifyd()async{
+    try{
+      final result = await Process.run('systemctl', ['--user','is-active','spotifyd.service']);
+      if(result.exitCode==0){
+        print("lmao nerd it's active, get a fucking life you retard");
+      }else{
+        Process.run("systemctl",['--user','restart','spotifyd.service']);
+      }
+    }catch(e){
+      throw SpotifyAPIError(message:e.toString());
+    }
+  }
+
+
+
   @override
   Future<void> syncDevice()async{
     try{
-      Process.run('systemctl',['--user','start','spotifyd.service']);
+      // await checkSpotifyd();
+      // Process.run('systemctl',['--user','start','spotifyd.service']);
       final PlaybackState? playbackState = await getPlaybackState();
       final List<Device> devices = await getavailableDevices();
       final String deviceName= dotenv.get("SPOTIFY_DEVICE_NAME");
-      if(playbackState==null||playbackState.device.name!=deviceName){
+      if(playbackState==null){
         for(var device in devices){
           if(device.name==deviceName){
             try{
-              await transferPlayback(deviceIds:[device.id],play:true);
+              await transferPlayback(deviceIds:[device.id],play:false);
             }catch(e){
               Process.run("systemctl", ['--user','restart','spotifyd.service']);
               await syncDevice();
@@ -65,6 +81,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> next({String? deviceId}) async {
     try {
+      // await syncDevice();
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
@@ -80,6 +97,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> pause({String? deviceId}) async {
     try {
+      // await syncDevice();
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
@@ -95,6 +113,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> previous({String? deviceId}) async {
     try {
+      // await syncDevice();
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
@@ -113,6 +132,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
     required RepeatState state,
   }) async {
     try {
+      // await syncDevice();
       final String queryParameters = Uri(
         queryParameters: deviceId != null
             ? {"device_id": deviceId, "state": state}
@@ -130,6 +150,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> resume({String? deviceId}) async {
     try {
+      // await syncDevice();
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
@@ -146,6 +167,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> seek({String? deviceId, required int positionMs}) async {
     try {
+      // await syncDevice();
       final String queryParameters = Uri(
         queryParameters: deviceId != null
             ? {"device_id": deviceId, "position_ms": positionMs.toString()}
@@ -163,6 +185,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> shuffle({String? deviceId, required bool state}) async {
     try{
+      // await syncDevice();
       final String queryParameters = Uri(
         queryParameters:deviceId!=null
         ?{"device_id":deviceId,"state":state.toString()}
@@ -181,6 +204,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> transferPlayback({required List<String> deviceIds,bool? play})async{
     try{
+      // await syncDevice();
       final Map<String,dynamic> body = play!=null
         ?{"device_ids":deviceIds,"play":play}
         :{"device_ids":deviceIds};
@@ -197,13 +221,14 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> volume({String? deviceId, required int volume}) async {
     try {
+      // await syncDevice();
       final String queryParameters = Uri(
         queryParameters: deviceId != null
             ? {"device_id": deviceId, "volume_percent": volume.toString()}
             : {"volume_percent": volume.toString()},
       ).query;
       await _apiClient.put(
-        endpoint: "${basePlayerEndpoint}volume",
+        endpoint: "$basePlayerEndpoint/volume",
         queryParameters: queryParameters,
       );
     } catch (e) {
@@ -214,6 +239,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> queue({String? deviceId, required String uri}) async {
     try {
+      // await syncDevice();
       final String queryParameters = Uri(
         queryParameters: deviceId != null
             ? {"device_id": deviceId, "uri": uri}
@@ -256,6 +282,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
 @override
 Future<void> startPlayback({required List<String> uris, String? deviceId}) async {
   try {
+    // await syncDevice();
     final Map<String, dynamic> queryParameters = {};
     if (deviceId != null) {
       queryParameters["device_id"] = deviceId;

@@ -166,6 +166,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  flutter_popup:
+    dependency: "direct main"
+    description:
+      name: flutter_popup
+      sha256: "08e554be1173f4e7bb5eda2ae2e5addd565873026a3ac9b64c38ea86dfd4dc9d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.9"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -432,6 +440,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.5+1"
+  shimmer:
+    dependency: "direct main"
+    description:
+      name: shimmer
+      sha256: "5f88c883a22e9f9f299e5ba0e4f7e6054857224976a5d9f839d4ebdc94a14ac9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

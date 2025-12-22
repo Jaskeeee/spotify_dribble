@@ -1,4 +1,4 @@
-import 'package:spotify_dribble/features/episode/model/episode.dart';
+import 'package:spotify_dribble/features/episode/domain/model/episode.dart';
 
 class Episodes {
   final int limit;

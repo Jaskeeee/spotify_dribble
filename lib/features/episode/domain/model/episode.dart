@@ -1,5 +1,6 @@
 import 'package:spotify_dribble/core/models/image_model.dart';
 import 'package:spotify_dribble/core/player/domain/model/resume_point.dart';
+import 'package:spotify_dribble/features/show/domain/model/show_simplified.dart';
 
 class Episode {
   final String id;
@@ -11,8 +12,9 @@ class Episode {
   final int durationMs;
   final String type;
   final List<ImageModel> images;
-  final ResumePoint resumePoint;
-  final DateTime releaseDate;
+  final ResumePoint? resumePoint;
+  final ShowSimplified show;
+  final String releaseDate;
   final String releaseDatePrecision;
   Episode({
     required this.id,
@@ -25,6 +27,7 @@ class Episode {
     required this.uri,
     required this.isPlayable,
     required this.releaseDate,
+    required this.show,
     required this.resumePoint,
     required this.releaseDatePrecision,
   });
@@ -36,11 +39,12 @@ class Episode {
       description: json["description"], 
       durationMs: json["duration_ms"], 
       explicit: json["explicit"], 
-      resumePoint: ResumePoint.fromJson(json["resume_point"]),
+      resumePoint:json["resume_point"]!=null?ResumePoint.fromJson(json["resume_point"]):ResumePoint(fullyPlayed: false, resumePositionMs:0),
       images: (json["images"] as List<dynamic>).map((json)=>ImageModel.fromJson(json)).toList(), 
       isPlayable: json["is_playable"], 
-      releaseDate: DateTime.parse(json["release_date"]), 
+      releaseDate: json["release_date"], 
       type: json["type"],
+      show: ShowSimplified.fromJson(json["show"]),
       releaseDatePrecision: json["release_date_precision"]
     );
   }
