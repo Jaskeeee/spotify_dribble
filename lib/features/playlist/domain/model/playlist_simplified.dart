@@ -1,5 +1,5 @@
 import 'package:spotify_dribble/core/models/image_model.dart';
-import 'package:spotify_dribble/features/playlist/model/owner.dart';
+import 'package:spotify_dribble/features/playlist/domain/model/owner.dart';
 
 class PlaylistSimplified {
   final String id;

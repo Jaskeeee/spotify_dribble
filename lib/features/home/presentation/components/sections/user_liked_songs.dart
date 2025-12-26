@@ -50,7 +50,7 @@ class _UserLikedSongsState extends State<UserLikedSongs> {
                           uri: track.uri,
                           coverArt: track.album.images[0], 
                           duration: track.durationMs, 
-                          subtitle: track.artists[0].name, 
+                          artists: track.artists, 
                           title: track.name
                         );
                       }

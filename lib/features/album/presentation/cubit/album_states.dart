@@ -1,5 +1,5 @@
 import 'package:spotify_dribble/features/album/domain/model/album.dart';
-import 'package:spotify_dribble/features/track/domain/model/track.dart';
+import 'package:spotify_dribble/features/track/domain/model/track_simplified.dart';
 
 sealed class AlbumStates {}
 class AlbumInitial extends AlbumStates{}
@@ -12,7 +12,7 @@ class UserAlbumLoaded extends AlbumStates{
   UserAlbumLoaded({required this.albums});
 }
 class AlbumTracksLoaded extends AlbumStates{
-  final List<Track> tracks;
+  final List<TrackSimplified> tracks;
   AlbumTracksLoaded({required this.tracks});
 }
 class AlbumLoading extends AlbumStates{}

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_dribble/features/album/data/spotify_album_repo.dart';
 import 'package:spotify_dribble/features/album/domain/model/album.dart';
 import 'package:spotify_dribble/features/album/presentation/cubit/album_states.dart';
+import 'package:spotify_dribble/features/track/domain/model/track_simplified.dart';
 
 class AlbumCubit extends Cubit<AlbumStates>{
   final SpotifyAlbumRepo spotifyAlbumRepo;
@@ -31,4 +32,17 @@ class AlbumCubit extends Cubit<AlbumStates>{
       emit(AlbumError(message:e.toString()));
     }
   }
+
+  Future<void>getAlbumTracks({required String id, int? limit,int? offset})async{
+    emit(AlbumLoading());
+    try{
+      final List<TrackSimplified> tracks = await spotifyAlbumRepo.getAlbumTracks(id: id,limit:limit,offset:offset);
+      emit(AlbumTracksLoaded(tracks: tracks));
+    }
+    catch(e){
+      emit(AlbumError(message: e.toString()));
+    }
+  }
+
+
 }

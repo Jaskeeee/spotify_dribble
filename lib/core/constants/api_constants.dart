@@ -6,4 +6,6 @@ final String baseUserEndpoint = "/v1/me";
 final String baseEpisodeEndpoint = "/v1/episodes";
 final String baseShowEndpoint = "/v1/shows";
 final String basePlaylistEndpoint = "/v1/playlists";
+final String baseCategoryEndpoint = "/v1/browse/categories";
+final String baseSearchEndpoint = "/v1/search";
 final Map<String,String> apiHeader = {"Content-Type":"application/json"}; 

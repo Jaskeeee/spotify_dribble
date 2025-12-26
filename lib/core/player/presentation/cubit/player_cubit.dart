@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
@@ -5,7 +6,7 @@ import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dar
 
 class PlayerCubit extends Cubit<PlayerStates>{
   final SpotifyPlayerRepo spotifyPlayerRepo;
-
+  Timer? timer;
   PlayerCubit({
     required this.spotifyPlayerRepo,
   }):super(PlayerInitial()){
@@ -23,9 +24,38 @@ class PlayerCubit extends Cubit<PlayerStates>{
     }
   }
 
+
+  Future<void> syncPlayback(Duration callbackDelay)async{
+    if(timer!=null){
+      timer!.cancel();
+    }
+    timer = Timer.periodic(callbackDelay,(timer)async{
+      await getPlaybackState();
+    });
+  }
+
   Future<void> getPlaybackState()async{
     try{
       final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
+      if(playbackState!=null && playbackState.playerItem!=null && playbackState.playerItem!.isTrack && playbackState.isPlaying){
+        final int trackDuration = playbackState.playerItem!.track!.durationMs;
+        final int trackProgress = trackDuration-playbackState.progressMs;
+        int delay=0;
+        if(trackProgress>60000){
+          delay=30;
+        }
+        else if(trackProgress<60000 && trackProgress>20000){
+          delay=10;
+        }
+        else{
+          delay=2;
+        }
+        syncPlayback(Duration(seconds:delay));
+      }
+      if(playbackState!=null && !playbackState.isPlaying && timer!=null){
+        print("stopped timer because music paused");
+        timer!.cancel();
+      }
       emit(PlayerLoaded(playbackState:playbackState));
     }
     catch(e){
@@ -56,6 +86,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   }
 
   Future<void>next({String? deviceId})async{
+    emit(PlayerLoading());
     try{
       await spotifyPlayerRepo.next(deviceId: deviceId);
       await Future.delayed(Duration(seconds:1,milliseconds:50));
@@ -67,6 +98,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   }
   
   Future<void>previous({String? deviceId})async{
+    emit(PlayerLoading());
     try{
       await spotifyPlayerRepo.previous(deviceId:deviceId);
       await Future.delayed(Duration(seconds:1,milliseconds:50));
@@ -89,7 +121,11 @@ class PlayerCubit extends Cubit<PlayerStates>{
   }
 
   Future<void>startPlayback({required List<String> uris,String? deviceId})async{
+    emit(PlayerLoading());
     try{
+      if(timer!=null){
+        timer!.cancel();
+      }
       await spotifyPlayerRepo.startPlayback(uris: uris,deviceId:deviceId);
       await Future.delayed(Duration(seconds:1));
       await getPlaybackState();
@@ -107,4 +143,13 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message: e.toString()));
     }
   }
+  
+  Future<void> shuffle({String? deviceId,required bool state})async{
+    try{
+      await spotifyPlayerRepo.shuffle(deviceId: deviceId,state: state);
+    }catch(e){
+      emit(PlayerError(message:e.toString()));
+    }
+  }
+
 }

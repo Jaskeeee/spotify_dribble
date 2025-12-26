@@ -1,79 +1,55 @@
 import 'package:flutter/material.dart';
-import 'package:spotify_dribble/core/components/sections/window_title_bar.dart';
-import 'package:spotify_dribble/core/constants/app_constants.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:spotify_dribble/core/auth/presentation/cubit/auth_cubit.dart';
+import 'package:spotify_dribble/core/auth/presentation/cubit/auth_states.dart';
+import 'package:spotify_dribble/features/home/presentation/pages/home_page.dart';
 
-class AuthPage extends StatefulWidget {
+class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthCubit, AuthStates>(
+      builder: (context, state) {
+        if (state is Authenticated) {
+          return HomePage(user: state.user);
+        } else if (state is AuthError) {
+          return TransitionScreen(child: Center(child: Text(state.message)));
+        } else {
+          return TransitionScreen(
+            child: Center(
+              child: LoadingAnimationWidget.waveDots(
+                color: Theme.of(context).colorScheme.primary,
+                size: 60,
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
 }
 
-class _AuthPageState extends State<AuthPage> {
+class TransitionScreen extends StatelessWidget {
+  final Widget child;
+  const TransitionScreen({super.key, required this.child});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Column(
-        children: [
-          WindowTitleBar(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40),
-              ),
-              child: Image.asset(lightLogoPath, width: 40, height: 40),
-            ),
-          ),
-          Expanded(
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(150, 100, 150, 0),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(50),
-                            topRight: Radius.circular(50),
-                          ),
-                          border: Border.all(
-                            style: BorderStyle.solid,
-                            color: Colors.grey.shade400.withValues(alpha: 0.3),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(150, 0, 150, 100),
-                        padding: EdgeInsets.all(30),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade700.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(50),
-                            bottomRight: Radius.circular(50),
-                          ),
-                          border: Border.all(
-                            style: BorderStyle.solid,
-                            color: Colors.grey.shade400.withValues(alpha: 0.3),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                // Carousel centered in the white (top) container
-              
-              ],
-            ),
-          ),
-        ],
+      body: Container(
+        margin: EdgeInsets.fromLTRB(150, 100, 150, 100),
+        width: double.infinity,
+        height: 810,
+        clipBehavior: Clip.none,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(50),
+          border: Border.all(color: Theme.of(context).colorScheme.secondary),
+          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+        ),
+        child: child,
       ),
     );
   }

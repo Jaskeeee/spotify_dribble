@@ -23,7 +23,7 @@ class Artist {
       name: json["name"], 
       uri: json["uri"],
       images: (json["images"] as List<dynamic>).map((json)=>ImageModel.fromJson(json)).toList(), 
-      followers: json["followers"], 
+      followers: json["followers"]["total"], 
       type: json["type"]
     );
   }

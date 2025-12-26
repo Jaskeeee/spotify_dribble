@@ -28,7 +28,15 @@ class _LoadingTileWidgetState extends State<LoadingTileWidget> {
           ),
         ),
         title: ShimmerWidget.rectangular(height:15),
-        subtitle:ShimmerWidget.rectangular(height:10)
+        subtitle:ShimmerWidget.rectangular(height:10),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ShimmerWidget.cicrular(height:30, width:30),
+            SizedBox(width: 20,),
+            ShimmerWidget.cicrular(height:30, width:30),
+          ],
+        ),
       )
     );
   }
@@ -38,6 +46,13 @@ class ShimmerWidget extends StatelessWidget {
   final double height;
   final double width;
   final ShapeBorder shapeBorder;
+
+  ShimmerWidget.cicrular({
+    super.key,
+    required this.height,
+    required this.width
+  }):shapeBorder=CircleBorder();
+
   ShimmerWidget.rectangular({
     super.key,
     required this.height,

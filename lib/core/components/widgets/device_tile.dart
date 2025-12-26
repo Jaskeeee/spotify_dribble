@@ -21,7 +21,7 @@ class DeviceTile extends StatelessWidget {
               :Theme.of(context).colorScheme.primary;
     return GestureDetector(
       onTap: (){
-        context.read<PlayerCubit>().transferPlayback(ids:ids,play:false);
+        context.read<PlayerCubit>().transferPlayback(ids:ids,play:true);
         Navigator.pop(context);
       },
       child: Padding(

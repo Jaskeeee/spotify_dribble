@@ -21,14 +21,6 @@ class AvailableDevicesPopUp extends StatefulWidget {
 }
 
 class _AvailableDevicesPopUpState extends State<AvailableDevicesPopUp>with RouteAware{
-
-  @override
-  void initState() {
-    context.read<PlayerCubit>().getPlaybackState();
-    super.initState();
-  }
-
-
   @override
   Widget build(BuildContext context) {
     return CustomPopup(

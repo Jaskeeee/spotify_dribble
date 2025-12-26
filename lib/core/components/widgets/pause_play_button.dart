@@ -11,14 +11,13 @@ class PausePlayButton extends StatefulWidget {
 }
 
 class _PausePlayButtonState extends State<PausePlayButton> {
-  late bool _isPlaying;
+  bool _isPlaying = false;
   bool _isInitialized = false;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PlayerCubit, PlayerStates>(
       listener: (context, state) {
-        // Sync local state with cubit state when it updates
         if (state is PlayerLoaded) {
           setState(() {
             _isPlaying = state.playbackState?.isPlaying ?? false;
@@ -27,7 +26,6 @@ class _PausePlayButtonState extends State<PausePlayButton> {
         }
       },
       builder: (context, state) {
-        // Initialize from cubit state if not yet initialized
         if (!_isInitialized && state is PlayerLoaded) {
           _isPlaying = state.playbackState?.isPlaying ?? false;
           _isInitialized = true;
@@ -35,12 +33,10 @@ class _PausePlayButtonState extends State<PausePlayButton> {
 
         return IconButton(
           onPressed: () {
-            // Optimistically update UI immediately
             setState(() {
               _isPlaying = !_isPlaying;
             });
             
-            // Then make the API call (state will sync via listener)
             if (_isPlaying) {
               context.read<PlayerCubit>().resume();
             } else {

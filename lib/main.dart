@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,6 +12,7 @@ void main()async{
  }catch(e){
   throw Exception("Failed to load .env file: $e");
  }
+ Process.run('systemctl',['--user','start','spotifyd.service']);
  runApp(App());
  doWhenWindowReady((){
     const initialSize = Size(600, 450);

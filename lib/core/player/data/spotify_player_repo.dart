@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
@@ -24,9 +25,16 @@ class SpotifyPlayerRepo implements PlayerRepo {
     }
   }
 
+  Future<void> playbackCaller(Duration callDelay)async{
+    Timer.periodic(callDelay,(timer)async{
+      await getPlaybackState();
+    });
+  }
+
   @override
   Future<PlaybackState?> getPlaybackState()async{
     try{
+      print("Playback state called");
       final PlaybackState? playbackState = await _apiClient.get(
         endpoint: basePlayerEndpoint, 
         fromJson: (json)=>PlaybackState.fromJson(json)
@@ -97,7 +105,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> pause({String? deviceId}) async {
     try {
-      // await syncDevice();
+      await syncDevice();
       final String? queryParameters = deviceId != null
           ? Uri(queryParameters: {"device_id": deviceId}).query
           : null;
@@ -282,7 +290,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
 @override
 Future<void> startPlayback({required List<String> uris, String? deviceId}) async {
   try {
-    // await syncDevice();
+    await syncDevice();
     final Map<String, dynamic> queryParameters = {};
     if (deviceId != null) {
       queryParameters["device_id"] = deviceId;

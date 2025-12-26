@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_dribble/core/components/widgets/playback_display.dart';
 import 'package:spotify_dribble/core/components/widgets/playback_display_tile.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_item.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
@@ -7,10 +8,14 @@ import 'package:spotify_dribble/features/episode/domain/model/episode.dart';
 import 'package:spotify_dribble/features/track/domain/model/track.dart';
 
 class PlaybackSection extends StatefulWidget {
+  final String repeatState;
+  final bool shuffleState;
   final PlayerItem? playerItem;
   const PlaybackSection({
     super.key,
-    required this.playerItem
+    required this.playerItem,
+    required this.repeatState,
+    required this.shuffleState,
   });
 
   @override
@@ -25,42 +30,39 @@ class _PlaybackSectionState extends State<PlaybackSection> {
   }
   Widget checkPlaybackItem(PlayerItem? playerItem){  
     if(playerItem == null) {
-      return Row(
-        children: [
-          Icon(
-            Icons.music_note,
-            color: Theme.of(context).colorScheme.primary,
-            size: 16,
-          ),
-          SizedBox(width:10),
-          Text(
-            " - ",
-            style: TextStyle(
+      return Padding(
+        padding: const EdgeInsets.all(30),
+        child: Row(
+          children: [
+            Icon(
+              Icons.music_note,
               color: Theme.of(context).colorScheme.primary,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+              size: 16,
             ),
-          ),
-          SizedBox(width:10),
-          Text(
-            "No playback Available",
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.primary,
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
+            SizedBox(width:10),
+            SizedBox(width:10),
+            Text(
+              "No playback Available",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       );
     }
     if(playerItem.isTrack){
       final Track track = playerItem.track!;
-      return PlaybackDisplayTile(
+      return PlaybackDisplay(
         title: track.name, 
         coverArt: track.album.images[0], 
         duration: track.durationMs, 
         subtitle: track.artists[0].name, 
-        trailingWidget: Text("Track")
+        repeatState: widget.repeatState,
+        shuffle: widget.shuffleState,
+        // trailingWidget: Text("Track")
       );   
     }
     if(playerItem.isEpisode){
@@ -74,25 +76,27 @@ class _PlaybackSectionState extends State<PlaybackSection> {
       );
     }
     return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.music_note_outlined,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Text(
-            "No playback Available",
-            style: TextStyle(
+        padding: EdgeInsets.all(30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.music_note,
               color: Theme.of(context).colorScheme.primary,
-              fontSize: 15
+              size: 25,
             ),
-          ),
-        ],
-      ),
-    );
+            SizedBox(width:20,),
+            Text(
+               "No playback Available",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontSize: 16
+              ),
+            ),
+          ],
+        ),
+      );
   }
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,7 @@ class _PlaybackSectionState extends State<PlaybackSection> {
         borderRadius: BorderRadius.circular(15),
         color: Colors.grey.shade800.withValues(alpha: 0.78),
       ),
-      child:checkPlaybackItem(widget.playerItem)
+      child: checkPlaybackItem(widget.playerItem)
     );
   }
 }

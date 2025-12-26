@@ -1,10 +1,8 @@
-import 'dart:convert';
-
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
-import 'package:spotify_dribble/features/playlist/model/playlist.dart';
-import 'package:spotify_dribble/features/playlist/model/playlist_simplified.dart';
+import 'package:spotify_dribble/features/playlist/domain/model/playlist.dart';
+import 'package:spotify_dribble/features/playlist/domain/model/playlist_simplified.dart';
 
 class SpotifyPlaylistRepo {
   final ApiClient _apiClient = ApiClient();
@@ -32,7 +30,7 @@ class SpotifyPlaylistRepo {
         fromJson: (json)=>(json["items"]as List<dynamic>)
       );
       if(playlistList==null){
-        throw SpotifyAPIError(message: "Failed to Fetch User Playlists!");
+        return [];
       }
       return playlistList.map((json)=>PlaylistSimplified.fromJson(json)).toList();
     }

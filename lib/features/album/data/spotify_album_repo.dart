@@ -28,7 +28,8 @@ class SpotifyAlbumRepo implements AlbumRepo{
     try{
       final Map<String,dynamic> queryParameters = {};
       if(limit!=null){
-        queryParameters["limit"]=limit.toString();
+        final String finalLimit = limit<=50?limit.toString():"50";
+        queryParameters["limit"]=finalLimit;
       }
       if(offset!=null){
         queryParameters["offset"]=offset.toString();
