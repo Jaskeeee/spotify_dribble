@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:spotify_dribble/core/components/sections/available_devices_pop_up.dart';
 import 'package:spotify_dribble/core/components/sections/playback_section.dart';
 import 'package:spotify_dribble/core/components/sections/volume_pop_up.dart';
@@ -11,7 +10,11 @@ import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart
 import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dart';
 
 class PlayerSection extends StatefulWidget {
-  const PlayerSection({super.key});
+  final GlobalKey<NavigatorState> navKey;
+  const PlayerSection({
+    super.key,
+    required this.navKey
+  });
 
   @override
   State<PlayerSection> createState() => _PlayerSectionState();
@@ -44,6 +47,7 @@ class _PlayerSectionState extends State<PlayerSection> {
       child: BlocBuilder<PlayerCubit, PlayerStates>(
         builder: (context, state) {
           if (state is PlayerLoaded) {
+            print(state.playbackState!.repeatState);
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -59,6 +63,7 @@ class _PlayerSectionState extends State<PlayerSection> {
                 SizedBox(width: 20),
                 Expanded(
                   child: PlaybackSection(
+                    navKey: widget.navKey,
                     playerItem: state.playbackState?.playerItem,
                     repeatState: state.playbackState?.repeatState ?? "off",
                     shuffleState: state.playbackState?.shuffleState ?? false,

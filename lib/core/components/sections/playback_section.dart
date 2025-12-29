@@ -11,11 +11,13 @@ class PlaybackSection extends StatefulWidget {
   final String repeatState;
   final bool shuffleState;
   final PlayerItem? playerItem;
+  final GlobalKey<NavigatorState> navKey;
   const PlaybackSection({
     super.key,
     required this.playerItem,
     required this.repeatState,
     required this.shuffleState,
+    required this.navKey
   });
 
   @override
@@ -100,13 +102,16 @@ class _PlaybackSectionState extends State<PlaybackSection> {
   }
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(top:1,bottom:1,left:2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: Colors.grey.shade800.withValues(alpha: 0.78),
+    return GestureDetector(
+      onTap: ()=>widget.navKey.currentState?.pushReplacementNamed('/listen'),
+      child: Container(
+        padding: EdgeInsets.only(top:1,bottom:1,left:2),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.grey.shade800.withValues(alpha: 0.78),
+        ),
+        child: checkPlaybackItem(widget.playerItem)
       ),
-      child: checkPlaybackItem(widget.playerItem)
     );
   }
 }

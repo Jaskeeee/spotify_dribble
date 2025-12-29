@@ -18,7 +18,7 @@ class AlbumCarousel extends StatefulWidget {
 class _AlbumCarouselState extends State<AlbumCarousel> {
   @override
   void initState() {
-    context.read<AlbumCubit>().getUserSavedAlbums(limit:40);
+    context.read<AlbumCubit>().getUserSavedAlbums(limit:50);
     super.initState();
   }
 
@@ -56,6 +56,8 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
                 },
                 options: CarouselOptions(
                   height: 280,
+                  autoPlay: true,
+                  autoPlayAnimationDuration: Duration(seconds:2),
                   scrollPhysics:CarouselScrollPhysics(),
                   viewportFraction: 0.15,
                   scrollDirection: Axis.horizontal,

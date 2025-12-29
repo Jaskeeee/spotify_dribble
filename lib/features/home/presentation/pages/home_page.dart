@@ -61,7 +61,7 @@ class _HomePageState extends State<HomePage> with RouteAware{
                   buttonRouteName: '/listen',
                   routeName: currentPage,
                   onTap: (){
-                    navigatorKey.currentState?.pushNamed('/listen',);
+                    navigatorKey.currentState?.pushReplacementNamed('/listen',);
                     setState(() {
                       currentPage='/listen';
                     });
@@ -73,7 +73,7 @@ class _HomePageState extends State<HomePage> with RouteAware{
                   buttonRouteName: '/',
                   routeName: currentPage,
                   onTap: (){
-                    navigatorKey.currentState?.pushNamed('/');
+                    navigatorKey.currentState?.pushReplacementNamed('/');
                     setState(() {
                       currentPage='/';
                     });
@@ -126,7 +126,7 @@ class _HomePageState extends State<HomePage> with RouteAware{
                             case('/album'):
                             return AlbumPage(pageData: pageData);
                             case('/listen'):
-                            return PlayerDisplayPage(pageData:pageData);
+                            return PlayerDisplayPage();
                             default:
                             return Material(
                               type: MaterialType.transparency,
@@ -142,7 +142,9 @@ class _HomePageState extends State<HomePage> with RouteAware{
                   ),
                 )
                 ),
-                PlayerSection()
+                PlayerSection(
+                  navKey: navigatorKey,
+                )
               ],
             ),
           ],

@@ -18,7 +18,7 @@ ThemeData lightTheme = ThemeData(
     primary: Colors.white,
     secondary: Colors.grey.shade400,
     tertiary: Colors.grey.shade600
-  )
+  ),
 );
 
 final WindowButtonColors buttonColors = WindowButtonColors(

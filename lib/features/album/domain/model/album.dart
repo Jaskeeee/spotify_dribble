@@ -1,4 +1,5 @@
 import 'package:spotify_dribble/core/models/image_model.dart';
+import 'package:spotify_dribble/features/album/domain/model/album_track.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
 
 class Album {
@@ -9,6 +10,7 @@ class Album {
   final String type;
   final List<ImageModel> images;
   final List<ArtistSimplified> artists;
+  final List<AlbumTrack> tracks;
   final String releaseDate;
   final String releaseDatePrecision;
   final String uri;
@@ -17,6 +19,7 @@ class Album {
     required this.name,
     required this.albumType,
     required this.images,
+    required this.tracks,
     required this.releaseDate,
     required this.uri,
     required this.type,
@@ -33,6 +36,7 @@ class Album {
       releaseDate:json["release_date"], 
       uri: json["uri"], 
       type: json["type"],
+      tracks:(json["tracks"]["items"] as List<dynamic>).map((json)=>AlbumTrack.fromJson(json)).toList(),
       releaseDatePrecision: json["release_date_precision"], 
       totalTracks:json["total_tracks"], 
       artists: (json["artists"] as List<dynamic>).map((json)=>ArtistSimplified.fromJson(json)).toList()

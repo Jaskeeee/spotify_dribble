@@ -1,46 +1,34 @@
-import 'package:spotify_dribble/features/album/domain/model/album.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
-import 'package:spotify_dribble/features/track/domain/model/track_album.dart';
 
-class Track {
+class AlbumTrack {
   final String id;
   final String name;
   final String uri;
   final String type;
-  final int discNumber;
+  final int discNumber; 
   final int durationMs;
-  final bool explicit;
   final int trackNumber;
   final List<ArtistSimplified> artists;
-  final TrackAlbum album;
-
-  Track({
-    required this.id,
-    required this.album,
+  AlbumTrack({
     required this.artists,
     required this.discNumber,
     required this.durationMs,
-    required this.explicit,
+    required this.id,
     required this.name,
     required this.trackNumber,
     required this.type,
-    required this.uri
+    required this.uri,
   });
-
-  factory Track.fromJson(Map<String,dynamic> json){
-    return Track(
-      id: json["id"], 
-      album: TrackAlbum.fromJson(json["album"]),
-      artists: (json["artists"] as List<dynamic>).map((json)=>ArtistSimplified.fromJson(json)).toList(), 
+  factory AlbumTrack.fromJson(Map<String,dynamic> json){
+    return AlbumTrack(
+      artists: (json["artists"]as List<dynamic>).map((json)=>ArtistSimplified.fromJson(json)).toList(), 
       discNumber: json["disc_number"], 
       durationMs: json["duration_ms"], 
-      explicit: json["explicit"], 
+      id: json["id"],
       name: json["name"], 
       trackNumber: json["track_number"], 
       type: json["type"], 
       uri: json["uri"]
     );
   }
-
-
 }

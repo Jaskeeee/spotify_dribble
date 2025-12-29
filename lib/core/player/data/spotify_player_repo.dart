@@ -51,20 +51,27 @@ class SpotifyPlayerRepo implements PlayerRepo {
       if(result.exitCode==0){
         print("lmao nerd it's active, get a fucking life you retard");
       }else{
-        Process.run("systemctl",['--user','restart','spotifyd.service']);
+        Process.run("systemctl",['--user','start','spotifyd.service']);
       }
     }catch(e){
       throw SpotifyAPIError(message:e.toString());
     }
   }
 
-
+  Future<void> stopSpotifyd()async{
+    try{
+      print("terminating spotifyd");
+      await Process.run('systemctl', ['--user','stop','spotifyd.service']);
+    }catch(e){
+      throw SpotifyError(message: e.toString());
+    }
+  }
 
   @override
   Future<void> syncDevice()async{
     try{
-      // await checkSpotifyd();
-      // Process.run('systemctl',['--user','start','spotifyd.service']);
+      await checkSpotifyd();
+      Process.run('systemctl',['--user','start','spotifyd.service']);
       final PlaybackState? playbackState = await getPlaybackState();
       final List<Device> devices = await getavailableDevices();
       final String deviceName= dotenv.get("SPOTIFY_DEVICE_NAME");
@@ -137,7 +144,7 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> repeatMode({
     String? deviceId,
-    required RepeatState state,
+    required String state,
   }) async {
     try {
       // await syncDevice();

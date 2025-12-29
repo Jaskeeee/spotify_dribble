@@ -6,7 +6,12 @@ import 'package:spotify_dribble/features/artist/presentation/cubit/artist_states
 
 class ArtistAvatar extends StatefulWidget {
   final String artistId;
-  const ArtistAvatar({super.key, required this.artistId});
+  final Color titleColor;
+  const ArtistAvatar({
+    super.key, 
+    required this.artistId,
+    required this.titleColor,
+  });
 
   @override
   State<ArtistAvatar> createState() => _ArtistAvatarState();
@@ -38,7 +43,7 @@ class _ArtistAvatarState extends State<ArtistAvatar> {
               Text(
                 artist.name,
                 style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: widget.titleColor,
                   fontSize: 16
                 ),
               )

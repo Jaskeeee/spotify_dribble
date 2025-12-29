@@ -7,7 +7,6 @@ import 'package:spotify_dribble/core/constants/app_constants.dart';
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/device_cubit.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/device_states.dart';
-import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 
 class AvailableDevicesPopUp extends StatefulWidget {
   final Device? activeDevice;
@@ -27,9 +26,8 @@ class _AvailableDevicesPopUpState extends State<AvailableDevicesPopUp>with Route
       backgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha:0.5),
       arrowColor: Theme.of(context).colorScheme.secondary.withValues(alpha:0.5),
       onBeforePopup: (){
-        context.read<DeviceCubit>().getavailableDevices();
         Future.delayed(Duration(seconds: 1));
-        context.read<PlayerCubit>().getPlaybackState();
+        context.read<DeviceCubit>().getavailableDevices();
       },
       content: Container(
         width: 200,

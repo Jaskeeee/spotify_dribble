@@ -169,5 +169,7 @@ app.*.symbols
 spotify_pkce_auth_flow
 #environment variables
 .env
+#spotifyd related files
 spotifyd-linux-x86_64-full.tar.gz
 spotifyd
+RESPONSIVE_DESIGN_SOLUTIONS.md

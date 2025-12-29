@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:spotify_dribble/core/components/widgets/hover_title.dart';
+import 'package:spotify_dribble/core/constants/api_constants.dart';
 import 'package:spotify_dribble/core/models/image_model.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 
@@ -30,6 +32,7 @@ class _PlaybackDisplayState extends State<PlaybackDisplay> {
   Widget build(BuildContext context) {
     final Duration mediaDuration = Duration(milliseconds:widget.duration);
     bool shuffleState = widget.shuffle;
+    String currentRepeatState = widget.repeatState;
     return Container(
       height:80,
       padding:EdgeInsets.fromLTRB(5,1,0,1),
@@ -53,22 +56,20 @@ class _PlaybackDisplayState extends State<PlaybackDisplay> {
             children: [
               SizedBox(
                 width: 400,
-                child: Text(
-                  widget.title,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 18,
-                  ),
+                child:HoverTitle(
+                  title: widget.title, 
+                  fontSize: 18, 
+                  onTap: ()=>print("help i am being touched"), 
+                  color: Theme.of(context).colorScheme.primary,
                   overflow: TextOverflow.ellipsis,
-                ),
+                )
               ),
-              Text(
-                widget.subtitle,
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 16
-                ),
-              ),
+              HoverTitle(
+                title: widget.subtitle, 
+                fontSize: 16, 
+                onTap: ()=>print("help i am being touched"), 
+                color: Theme.of(context).colorScheme.secondary
+              )
             ],
           ),
           Spacer(),
@@ -97,10 +98,29 @@ class _PlaybackDisplayState extends State<PlaybackDisplay> {
           SizedBox(width:10),
           IconButton(
             onPressed: (){
+              String state;
+              int nextIndex = 0;
+              int currentIndex = repeatStates.indexWhere((state)=>state==widget.repeatState);
+              nextIndex= currentIndex+1;
+              if(nextIndex>=repeatStates.length){
+                state = repeatStates[0];
+                nextIndex=0;
+              }else{
+                state = repeatStates[nextIndex];
+              }
+              setState(() {
+                currentRepeatState=state;
+              });
+              context.read<PlayerCubit>().repeatMode(state: state);
             }, 
             icon: Icon(
-              Bootstrap.repeat,
+            (currentRepeatState=="context"||currentRepeatState=="off")
+            ?Bootstrap.repeat
+            :Bootstrap.repeat_1,
               size: 25,
+              color: (currentRepeatState=="context"||currentRepeatState=="track")
+              ?Colors.green
+              :Theme.of(context).colorScheme.primary,
             )
           ),
           SizedBox(width:20),

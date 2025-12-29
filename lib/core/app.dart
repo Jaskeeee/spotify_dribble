@@ -1,9 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_dribble/core/auth/data/spotify_user_repo.dart';
 import 'package:spotify_dribble/core/auth/presentation/cubit/auth_cubit.dart';
 import 'package:spotify_dribble/core/auth/presentation/pages/auth_page.dart';
-import 'package:spotify_dribble/core/constants/app_constants.dart';
 import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/device_cubit.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
@@ -19,7 +20,15 @@ import 'package:spotify_dribble/features/playlist/presentation/cubit/playlist_cu
 import 'package:spotify_dribble/features/track/data/spotify_track_repo.dart';
 import 'package:spotify_dribble/features/track/presentation/cubit/track_cubit.dart';
 
-class App extends StatelessWidget{
+class App extends StatefulWidget{
+
+  App({super.key});
+
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
   final SpotifyPlayerRepo spotifyPlayerRepo = SpotifyPlayerRepo();
   final SpotifyAlbumRepo spotifyAlbumRepo = SpotifyAlbumRepo();
   final SpotifyTrackRepo spotifyTrackRepo = SpotifyTrackRepo();
@@ -27,7 +36,23 @@ class App extends StatelessWidget{
   final SpotifyCategoryRepo spotifyCategoryRepo = SpotifyCategoryRepo();
   final SpotifyUserRepo spotifyUserRepo = SpotifyUserRepo();
   final SpotifyArtistRepo spotifyArtistRepo = SpotifyArtistRepo();
-  App({super.key});
+
+  late final AppLifecycleListener listener;
+
+  Future<AppExitResponse> stopSystemService()async{
+    await spotifyPlayerRepo.stopSpotifyd();
+    return AppExitResponse.exit;
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    listener = AppLifecycleListener(
+      onExitRequested: () => stopSystemService(),
+    );
+  }
+
+
 
   @override
   Widget build(BuildContext context) {

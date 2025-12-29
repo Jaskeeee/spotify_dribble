@@ -9,3 +9,4 @@ final String basePlaylistEndpoint = "/v1/playlists";
 final String baseCategoryEndpoint = "/v1/browse/categories";
 final String baseSearchEndpoint = "/v1/search";
 final Map<String,String> apiHeader = {"Content-Type":"application/json"}; 
+final List<String> repeatStates=["off","context","track"];

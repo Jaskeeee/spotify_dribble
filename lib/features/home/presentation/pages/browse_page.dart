@@ -4,7 +4,7 @@ import 'package:spotify_dribble/core/constants/app_constants.dart';
 import 'package:spotify_dribble/core/models/page_data.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/features/album/presentation/cubit/album_cubit.dart';
-import 'package:spotify_dribble/features/home/presentation/components/album_carousel.dart';
+import 'package:spotify_dribble/features/album/presentation/components/sections/album_carousel.dart';
 import 'package:spotify_dribble/features/home/presentation/components/sections/user_liked_songs.dart';
 import 'package:spotify_dribble/features/home/presentation/components/sections/spotify_recommendations.dart';
 import 'package:spotify_dribble/features/home/presentation/pages/browsing_header.dart';

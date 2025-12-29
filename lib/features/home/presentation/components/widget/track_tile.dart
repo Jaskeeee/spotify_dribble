@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_dribble/core/components/widgets/hover_title.dart';
 import 'package:spotify_dribble/core/models/image_model.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
@@ -46,12 +47,11 @@ class TrackTile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 16,
-                  ),
+                HoverTitle(
+                  title: title, 
+                  fontSize: 16, 
+                  onTap: ()=>print("instead of fucking clicking on it try implementing it"), 
+                  color: Theme.of(context).colorScheme.primary
                 ),
                 Text(
                   artistsNames.join(', '),

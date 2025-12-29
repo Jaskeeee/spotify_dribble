@@ -13,6 +13,9 @@ class UserAlbumLoaded extends AlbumStates{
 }
 class AlbumTracksLoaded extends AlbumStates{
   final List<TrackSimplified> tracks;
-  AlbumTracksLoaded({required this.tracks});
+  AlbumTracksLoaded({
+    required this.tracks,
+  });
+  
 }
 class AlbumLoading extends AlbumStates{}

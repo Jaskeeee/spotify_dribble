@@ -23,7 +23,16 @@ class PlayerCubit extends Cubit<PlayerStates>{
       emit(PlayerError(message:e.toString()));
     }
   }
+  Future<void> playbackProgress()async{
+    if(timer!=null){
+      Stream<int> progress = Stream.periodic(
+        Duration(seconds: 1),(tick)=>timer!.tick
+      );
 
+    }
+    else{
+    }
+  }
 
   Future<void> syncPlayback(Duration callbackDelay)async{
     if(timer!=null){
@@ -38,7 +47,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
     try{
       final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
       if(playbackState!=null && playbackState.playerItem!=null && playbackState.playerItem!.isTrack && playbackState.isPlaying){
-        final int trackDuration = playbackState.playerItem!.track!.durationMs;
+        final int trackDuration = playbackState.playerItem!.track!.durationMs-5000;
         final int trackProgress = trackDuration-playbackState.progressMs;
         int delay=0;
         if(trackProgress>60000){
@@ -66,7 +75,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void> pause({String? deviceId})async{
     try{
       await spotifyPlayerRepo.pause(deviceId: deviceId);
-      await Future.delayed(Duration(seconds:1,milliseconds:50));
+      await Future.delayed(Duration(milliseconds:500));
       await getPlaybackState();
     }
     catch(e){
@@ -77,7 +86,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void>resume({String? deviceId})async{
     try{
       await spotifyPlayerRepo.resume(deviceId: deviceId);
-      await Future.delayed(Duration(seconds:1,milliseconds:50));
+      await Future.delayed(Duration(milliseconds:500));
       await getPlaybackState();
     }
     catch(e){
@@ -147,9 +156,20 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void> shuffle({String? deviceId,required bool state})async{
     try{
       await spotifyPlayerRepo.shuffle(deviceId: deviceId,state: state);
+      await Future.delayed(Duration(milliseconds:500));
+      await getPlaybackState();
     }catch(e){
       emit(PlayerError(message:e.toString()));
     }
   }
 
+  Future<void> repeatMode({String? deviceId,required String state})async{
+    try{
+      await spotifyPlayerRepo.repeatMode(deviceId: deviceId,state: state);
+      await Future.delayed(Duration(milliseconds:500));
+      await getPlaybackState();
+    }catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
 }

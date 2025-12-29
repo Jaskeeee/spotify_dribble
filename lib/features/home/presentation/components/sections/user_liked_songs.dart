@@ -15,6 +15,8 @@ class UserLikedSongs extends StatefulWidget {
 }
 
 class _UserLikedSongsState extends State<UserLikedSongs> {
+  late final ScrollController scrollController;
+  bool isScrolling = false;
   List<Track> likedSongs = [];
   @override
   void initState() {
