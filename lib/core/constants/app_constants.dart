@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icons_plus/icons_plus.dart';
 final String darkLogoPath = "assets/images/Spotify_Primary_Logo_RGB_Black.png";
 final String lightLogoPath = "assets/images/Spotify_Primary_Logo_RGB_White.png";
 final String spotifyLogoPath = "assets/images/Spotify_Primary_Logo_RGB_Green.png";
@@ -26,3 +27,14 @@ final LinearGradient shader = LinearGradient(
     Colors.white,
   ],
 );
+final List<IconData> albumMenuItems=[
+  Icons.format_list_bulleted_add,
+  Icons.favorite,
+  BoxIcons.bxs_playlist
+];
+
+final List<String> albumMenuItemsTitle= [
+  "Add to queue",
+  "Add to your Library",
+  "Add to Playlist"
+];

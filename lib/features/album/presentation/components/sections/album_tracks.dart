@@ -9,10 +9,7 @@ import 'package:spotify_dribble/features/track/domain/model/track_simplified.dar
 
 class AlbumTracks extends StatefulWidget {
   final Album album;
-  const AlbumTracks({
-    super.key,
-    required this.album,
-  });
+  const AlbumTracks({super.key, required this.album});
 
   @override
   State<AlbumTracks> createState() => _AlbumTracksState();
@@ -21,24 +18,32 @@ class AlbumTracks extends StatefulWidget {
 class _AlbumTracksState extends State<AlbumTracks> {
   @override
   void initState() {
-    context.read<AlbumCubit>().getAlbumTracks(id:widget.album.id,limit:widget.album.totalTracks<=50?widget.album.totalTracks:50);
+    context.read<AlbumCubit>().getAlbumTracks(
+      id: widget.album.id,
+      limit: widget.album.totalTracks <= 50 ? widget.album.totalTracks : 50,
+    );
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.fromLTRB(15,20,30,20),
-          height: 380,
-          child: BlocBuilder<AlbumCubit, AlbumStates>(
-            builder: (context, state) {
-              if (state is AlbumTracksLoaded) {
-                if (state.tracks.isNotEmpty) {
-                  return ListView.builder(
-                    itemCount: state.tracks.length,
-                    itemBuilder: (context, index) {
-                      final TrackSimplified trackSimplified = state.tracks[index];
+    return Flexible(
+      flex: 1,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(25, 20, 25, 0),
+        child: BlocBuilder<AlbumCubit, AlbumStates>(
+          builder: (context, state) {
+            if (state is AlbumTracksLoaded) {
+              if (state.tracks.isNotEmpty) {
+                return ListView.builder(
+                  itemCount: state.tracks.length,
+                  itemBuilder: (context, index) {
+                    final TrackSimplified trackSimplified = state.tracks[index];
+                    if (index ==(state.tracks.length + 1)) {
+                      return SizedBox(
+                        height: 30,
+                      );
+                    }else {
                       return SizedBox(
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -46,14 +51,17 @@ class _AlbumTracksState extends State<AlbumTracks> {
                             SizedBox(
                               width: 25,
                               child: Text(
-                                (index+1).toString(),
+                                (index + 1).toString(),
                                 style: TextStyle(
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  fontSize: 16
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                  fontSize: 16,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                            SizedBox(width:20),
+                            SizedBox(width: 30),
                             Expanded(
                               child: TrackTile(
                                 uri: trackSimplified.uri,
@@ -66,31 +74,31 @@ class _AlbumTracksState extends State<AlbumTracks> {
                           ],
                         ),
                       );
-                    },
-                  );
-                } else {
-                  return Center(child: Text("No Tracks found!"));
-                }
-              } else if (state is AlbumError) {
-                return Center(
-                  child: Text(
-                    state.message,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontSize: 18,
-                    ),
-                  ),
+                    }
+                  },
                 );
               } else {
-                return ListView.builder(
-                  itemCount: 20,
-                  itemBuilder: (context, index) => LoadingTileWidget(),
-                );
+                return Center(child: Text("No Tracks found!"));
               }
-            },
-          ),
+            } else if (state is AlbumError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontSize: 18,
+                  ),
+                ),
+              );
+            } else {
+              return ListView.builder(
+                itemCount: 20,
+                itemBuilder: (context, index) => LoadingTileWidget(),
+              );
+            }
+          },
         ),
-      ],
+      ),
     );
   }
 }

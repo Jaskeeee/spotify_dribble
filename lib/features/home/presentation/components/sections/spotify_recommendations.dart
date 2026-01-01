@@ -33,9 +33,9 @@ class _SpotifyRecommendationsState extends State<SpotifyRecommendations> {
         ),
         SizedBox(height: 20,),
         Container(
-          width: 800,
-          height: 320,
           padding: EdgeInsets.symmetric(horizontal:25),
+          height:300,
+          width: 800,
           child: BlocBuilder<CategoryCubit,CategoryStates>(
             builder: (context,state){
               if(state is CategoriesLoaded){

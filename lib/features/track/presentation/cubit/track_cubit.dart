@@ -10,7 +10,7 @@ class TrackCubit extends Cubit<TrackStates>{
   Future<void> getUserSavedTracks({int? limit,int? offset})async{
     emit(TrackLoading());
     try{
-      final List<Track> tracks = await spotifyTrackRepo.getUserSavedTracks();
+      final List<Track> tracks = await spotifyTrackRepo.getUserSavedTracks(limit:limit,offset:offset);
       emit(TrackLoaded(tracks: tracks));
     }
     catch(e){

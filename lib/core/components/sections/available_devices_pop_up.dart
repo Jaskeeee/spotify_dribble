@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_popup/flutter_popup.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:spotify_dribble/core/components/widgets/device_tile.dart';
+import 'package:spotify_dribble/core/player/presentation/components/widgets/device_tile.dart';
 import 'package:spotify_dribble/core/constants/app_constants.dart';
 import 'package:spotify_dribble/core/player/domain/model/device.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/device_cubit.dart';

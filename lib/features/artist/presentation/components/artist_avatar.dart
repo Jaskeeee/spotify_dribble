@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_dribble/core/components/widgets/hover_title.dart';
+import 'package:spotify_dribble/core/models/page_data.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
 import 'package:spotify_dribble/features/artist/presentation/cubit/artist_cubit.dart';
 import 'package:spotify_dribble/features/artist/presentation/cubit/artist_states.dart';
@@ -40,12 +42,15 @@ class _ArtistAvatarState extends State<ArtistAvatar> {
                 )
               ),
               SizedBox(width:10),
-              Text(
-                artist.name,
-                style: TextStyle(
-                  color: widget.titleColor,
-                  fontSize: 16
-                ),
+              HoverTitle(
+                title: artist.name, 
+                fontSize:16, 
+                onTap: (){
+                  final PageData pageData = PageData(artist: artist);
+                  Navigator.pushNamed(context,'/artist',arguments:pageData);
+
+                }, 
+                color: Theme.of(context).colorScheme.primary
               )
             ],
           );

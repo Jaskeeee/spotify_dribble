@@ -9,8 +9,8 @@ class BrowsingHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-
           SizedBox(
             height: 60,
             width: 400,
@@ -38,7 +38,6 @@ class BrowsingHeader extends StatelessWidget {
               ),
             ),
           ),
-
         Spacer(),
         UserAvatar(user: user),
       ],

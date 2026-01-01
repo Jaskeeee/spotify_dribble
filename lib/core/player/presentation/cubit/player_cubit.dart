@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_dribble/core/error/spotify_error.dart';
 import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
+import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dart';
 
 class PlayerCubit extends Cubit<PlayerStates>{
@@ -163,12 +165,22 @@ class PlayerCubit extends Cubit<PlayerStates>{
     }
   }
 
-  Future<void> repeatMode({String? deviceId,required String state})async{
+  Future<void> repeatMode({String? deviceId,required RepeatState state})async{
     try{
       await spotifyPlayerRepo.repeatMode(deviceId: deviceId,state: state);
       await Future.delayed(Duration(milliseconds:500));
       await getPlaybackState();
     }catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
+  Future<void> shufflePlay({required List<String> ids,required bool shuffleState})async{
+    emit(PlayerLoading());
+    try{ 
+      startPlayback(uris:ids);
+      await Future.delayed(Duration(milliseconds:1500));
+      shuffle(state:shuffleState);
+    }catch (e) {
       emit(PlayerError(message: e.toString()));
     }
   }

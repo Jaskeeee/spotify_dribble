@@ -1,6 +1,6 @@
 import 'package:spotify_dribble/core/auth/data/services/api_client.dart';
 import 'package:spotify_dribble/core/error/spotify_error.dart';
-import 'package:spotify_dribble/features/album/domain/model/album.dart';
+import 'package:spotify_dribble/features/album/domain/model/album_simplified.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist.dart';
 import 'package:spotify_dribble/features/artist/domain/repo/artist_repo.dart';
 
@@ -25,16 +25,16 @@ class SpotifyArtistRepo implements ArtistRepo{
   }
   
   @override
-  Future<List<Album>> getArtistAlbums({required String id})async{
+  Future<List<AlbumSimplified>> getArtistAlbums({required String id})async{
     try{
       final artistAlbums = await _apiClient.get(
         endpoint: "$baseEndpoint$id/albums", 
-        fromJson: (json)=>(json as List<dynamic>)
+        fromJson: (json)=>(json["items"] as List<dynamic>)
       );
       if(artistAlbums==null){
-        throw SpotifyAPIError(message:"Couldn't load Artist Albums");
+        return [];
       }
-      return artistAlbums.map((json)=>Album.fromJson(json)).toList();
+      return artistAlbums.map((json)=>AlbumSimplified.fromJson(json)).toList();
     }
     catch(e){
       throw SpotifyAPIError(message:e.toString());

@@ -5,16 +5,13 @@ import 'package:spotify_dribble/core/components/sections/playback_section.dart';
 import 'package:spotify_dribble/core/components/sections/volume_pop_up.dart';
 import 'package:spotify_dribble/core/components/widgets/common_icon_button.dart';
 import 'package:spotify_dribble/core/components/widgets/loading_tile_widget.dart';
-import 'package:spotify_dribble/core/components/widgets/pause_play_button.dart';
+import 'package:spotify_dribble/core/player/presentation/components/widgets/pause_play_button.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dart';
 
 class PlayerSection extends StatefulWidget {
   final GlobalKey<NavigatorState> navKey;
-  const PlayerSection({
-    super.key,
-    required this.navKey
-  });
+  const PlayerSection({super.key, required this.navKey});
 
   @override
   State<PlayerSection> createState() => _PlayerSectionState();
@@ -25,7 +22,7 @@ class _PlayerSectionState extends State<PlayerSection> {
 
   @override
   void initState() {
-    // context.read<PlayerCubit>().getPlaybackState();
+    context.read<PlayerCubit>().getPlaybackState();
     super.initState();
   }
 
@@ -47,7 +44,6 @@ class _PlayerSectionState extends State<PlayerSection> {
       child: BlocBuilder<PlayerCubit, PlayerStates>(
         builder: (context, state) {
           if (state is PlayerLoaded) {
-            print(state.playbackState!.repeatState);
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -74,7 +70,7 @@ class _PlayerSectionState extends State<PlayerSection> {
                   activeDevice: state.playbackState?.device,
                 ),
                 SizedBox(width: 20),
-                Icon(Icons.menu),
+                Icon(Icons.menu, size: 25),
                 SizedBox(width: 20),
                 VolumePopUp(
                   volume: state.playbackState?.device.volumePercent ?? 50,
@@ -106,9 +102,7 @@ class _PlayerSectionState extends State<PlayerSection> {
                 SizedBox(width: 20),
                 Icon(Icons.menu),
                 SizedBox(width: 20),
-                Icon(
-                  Icons.volume_up
-                )
+                Icon(Icons.volume_up),
               ],
             );
           }

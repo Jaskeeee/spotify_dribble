@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_dribble/core/components/widgets/playback_display.dart';
-import 'package:spotify_dribble/core/components/widgets/playback_display_tile.dart';
+import 'package:spotify_dribble/core/player/presentation/components/widgets/playback_display.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_item.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/features/episode/domain/model/episode.dart';
@@ -58,23 +57,22 @@ class _PlaybackSectionState extends State<PlaybackSection> {
     if(playerItem.isTrack){
       final Track track = playerItem.track!;
       return PlaybackDisplay(
-        title: track.name, 
-        coverArt: track.album.images[0], 
-        duration: track.durationMs, 
-        subtitle: track.artists[0].name, 
-        repeatState: widget.repeatState,
-        shuffle: widget.shuffleState,
-        // trailingWidget: Text("Track")
-      );   
+        album: track.album, 
+        artists: track.artists, 
+        duration: track.durationMs,
+        repeatState: widget.repeatState, 
+        shuffleState: widget.shuffleState, 
+        track: track  
+      );
     }
     if(playerItem.isEpisode){
       final Episode episode = playerItem.episode!;
-      return PlaybackDisplayTile(
-        title: episode.name, 
-        coverArt: episode.images[0], 
+      return PlaybackDisplay(
+        episode: episode,
+        show: episode.show,
         duration: episode.durationMs, 
-        subtitle: episode.show.name, 
-        trailingWidget: Text("Episode")
+        repeatState: widget.repeatState, 
+        shuffleState: widget.shuffleState
       );
     }
     return Padding(

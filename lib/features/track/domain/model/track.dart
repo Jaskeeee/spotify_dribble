@@ -1,4 +1,3 @@
-import 'package:spotify_dribble/features/album/domain/model/album.dart';
 import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
 import 'package:spotify_dribble/features/track/domain/model/track_album.dart';
 

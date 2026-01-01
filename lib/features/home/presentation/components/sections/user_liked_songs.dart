@@ -16,18 +16,39 @@ class UserLikedSongs extends StatefulWidget {
 
 class _UserLikedSongsState extends State<UserLikedSongs> {
   late final ScrollController scrollController;
+  int offset=0;
+  final int limit=50;
   bool isScrolling = false;
   List<Track> likedSongs = [];
+
+  void handleScrollEnd(){
+    if(scrollController.position.pixels==scrollController.position.maxScrollExtent){
+      print("reached the end of the list");
+      offset+=limit+1;
+      context.read<TrackCubit>().getUserSavedTracks(limit:limit,offset:offset);
+    }
+  }
+
   @override
   void initState() {
-    context.read<TrackCubit>().getUserSavedTracks();
+    context.read<TrackCubit>().getUserSavedTracks(limit:50,offset:offset);
+    scrollController = ScrollController();
+    scrollController.addListener(handleScrollEnd);
     super.initState();
   }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         HeaderSection(
           iconData: Icons.favorite, 
@@ -35,19 +56,21 @@ class _UserLikedSongsState extends State<UserLikedSongs> {
         ),
         SizedBox(height: 20),
         Container(
+          height: 300,
           width: 800,
-          height: 320,
           padding: EdgeInsets.symmetric(horizontal:25),
           child: BlocBuilder<TrackCubit,TrackStates>(
             builder: (context,state){
               if(state is TrackLoaded){
                 if(state.tracks.isNotEmpty){
+                  likedSongs.addAll(state.tracks);
                   return ListView.builder(
-                      itemCount: state.tracks.length,
+                      itemCount: likedSongs.length,
                       scrollDirection: Axis.vertical,
+                      controller: scrollController,
                       physics: ScrollPhysics(),
                       itemBuilder: (context,index){
-                        final Track track = state.tracks[index];
+                        final Track track = likedSongs[index];
                         return TrackTile(
                           uri: track.uri,
                           coverArt: track.album.images[0], 

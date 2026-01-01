@@ -46,7 +46,7 @@ class _AlbumCarouselState extends State<AlbumCarousel> {
                       width: 280,
                       height: 280,
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(28),
                         child: Image.network(
                           album.images[0].imageUrl,
                         ),

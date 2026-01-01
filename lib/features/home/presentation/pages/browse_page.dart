@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spotify_dribble/core/constants/app_constants.dart';
 import 'package:spotify_dribble/core/models/page_data.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
-import 'package:spotify_dribble/features/album/presentation/cubit/album_cubit.dart';
 import 'package:spotify_dribble/features/album/presentation/components/sections/album_carousel.dart';
+import 'package:spotify_dribble/features/album/presentation/cubit/album_cubit.dart';
 import 'package:spotify_dribble/features/home/presentation/components/sections/user_liked_songs.dart';
 import 'package:spotify_dribble/features/home/presentation/components/sections/spotify_recommendations.dart';
 import 'package:spotify_dribble/features/home/presentation/pages/browsing_header.dart';
@@ -16,14 +16,13 @@ class BrowsePage extends StatefulWidget {
   State<BrowsePage> createState() => _BrowsePageState();
 }
 
-class _BrowsePageState extends State<BrowsePage>with RouteAware{
+class _BrowsePageState extends State<BrowsePage>with RouteAware,SingleTickerProviderStateMixin{
   double currentSliderValue = 20;
   double currentDiscretesliderValue = 60;
 
   @override
   void initState() {
     context.read<PlayerCubit>().getPlaybackState();
-    print("IT WAS CALLED!");
     super.initState();
   }
 
@@ -49,27 +48,30 @@ class _BrowsePageState extends State<BrowsePage>with RouteAware{
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          height: 400,
-          padding: EdgeInsets.all(25),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              Column(
-                children: [
-                  BrowsingHeader(user:widget.pageData.user), 
-                  Spacer()
-                ]),
-              Positioned(
-                top: 90,
-                left: -120,
-                right: -120,
-                child: AlbumCarousel(),
-              ),
-            ],
+        Flexible(
+          flex: 1,          
+          child: Padding(
+            padding: const EdgeInsets.all(25),
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                Column(
+                  children: [
+                    BrowsingHeader(user:widget.pageData.user), 
+                    Spacer()
+                  ]),
+                Positioned(
+                  top: 90,
+                  left: -120,
+                  right: -120,
+                  child: AlbumCarousel(),
+                ),
+              ],
+            ),
           ),
         ),
-        Expanded(
+        Flexible(
+          flex: 1,
           child: Container(
             padding: EdgeInsets.zero,
             margin: EdgeInsets.zero,
@@ -83,6 +85,7 @@ class _BrowsePageState extends State<BrowsePage>with RouteAware{
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisSize: MainAxisSize.min,
               children: [
                 UserLikedSongs(),
                 SizedBox(width: 10),

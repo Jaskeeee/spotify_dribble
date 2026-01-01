@@ -144,14 +144,14 @@ class SpotifyPlayerRepo implements PlayerRepo {
   @override
   Future<void> repeatMode({
     String? deviceId,
-    required String state,
+    required RepeatState state,
   }) async {
     try {
       // await syncDevice();
       final String queryParameters = Uri(
         queryParameters: deviceId != null
-            ? {"device_id": deviceId, "state": state}
-            : {"state": state},
+            ? {"device_id": deviceId, "state": state.name}
+            : {"state": state.name},
       ).query;
       await _apiClient.put(
         endpoint: "$basePlayerEndpoint/repeat",

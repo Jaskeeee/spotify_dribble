@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:spotify_dribble/core/models/page_data.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dart';
+import 'package:spotify_dribble/features/artist/domain/model/artist_simplified.dart';
 import 'package:spotify_dribble/features/track/domain/model/track.dart';
 import 'package:spotify_dribble/core/components/widgets/hover_title.dart';
 
@@ -79,7 +80,7 @@ class _PlayerDisplayPageState extends State<PlayerDisplayPage>
                 (index) => track.artists[index].name,
               );
 
-              final PageData pageData = PageData(trackAlbum: track.album);
+              // final PageData pageData = PageData(trackAlbum: track.album);
 
               return GestureDetector(
                 onTap: () {
@@ -216,17 +217,21 @@ class _PlayerDisplayPageState extends State<PlayerDisplayPage>
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(artists.length, (index) {
+                              children: List.generate(track.artists.length, (index) {
                                 if (artists.length==1||(index+1)==artists.length) {
+                                  final ArtistSimplified artist = track.artists[index];
+                                  final PageData pageData = PageData(
+                                    artistSimplified: artist
+                                  );
                                   return Row(
                                     children: [
                                       SizedBox(
                                         width:5,
                                       ),
                                       HoverTitle(
-                                        title: artists[index],
+                                        title: artist.name,
                                         fontSize: 16,
-                                        onTap: () => print("get a life retard"),
+                                        onTap: () => Navigator.pushNamed(context, '/artist',arguments:pageData),
                                         color: Theme.of(
                                           context,
                                         ).colorScheme.primary,
