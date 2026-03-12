@@ -24,6 +24,7 @@ class _BrowsePageState extends State<BrowsePage>with RouteAware,SingleTickerProv
   void initState() {
     context.read<PlayerCubit>().getPlaybackState();
     super.initState();
+    context.read<PlayerCubit>().transferTospotifyd();
   }
 
   @override
@@ -83,7 +84,7 @@ class _BrowsePageState extends State<BrowsePage>with RouteAware,SingleTickerProv
               color: Colors.black.withValues(alpha: 0.3),
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               // mainAxisSize: MainAxisSize.min,
               children: [

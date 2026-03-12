@@ -25,7 +25,7 @@ class BrowsingHeader extends StatelessWidget {
                 hintStyle: TextStyle(color:Theme.of(context).colorScheme.secondary),
                 prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.all(12),
+                contentPadding: EdgeInsets.fromLTRB(20,12,20,12),
                 enabled: true,
                 enabledBorder:OutlineInputBorder(
                   borderRadius: BorderRadius.circular(60),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:spotify_dribble/core/auth/data/spotify_oauth_pkce.dart';
 import 'package:spotify_dribble/core/auth/presentation/cubit/auth_cubit.dart';
 import 'package:spotify_dribble/core/auth/presentation/cubit/auth_states.dart';
 import 'package:spotify_dribble/features/home/presentation/pages/home_page.dart';
@@ -10,13 +11,26 @@ class AuthPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final SpotifyOauthPkce spotifyOauthPkce = SpotifyOauthPkce();
     return BlocBuilder<AuthCubit, AuthStates>(
       builder: (context, state) {
         if (state is Authenticated) {
           return HomePage(user: state.user);
         } else if (state is AuthError) {
           return TransitionScreen(child: Center(child: Text(state.message)));
-        } else {
+
+        } 
+        else if (state is Unauthenticated){
+          return Scaffold(
+            body: Center(
+              child: TextButton(
+                onPressed: ()async=>spotifyOauthPkce.requestUserAuthorization(), 
+                child: Text("Log in")
+              ),
+            ),
+          );
+        }
+        else {
           return TransitionScreen(
             child: Center(
               child: LoadingAnimationWidget.waveDots(

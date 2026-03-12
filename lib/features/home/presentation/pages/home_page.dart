@@ -5,6 +5,7 @@ import 'package:spotify_dribble/core/auth/domain/model/spotify_user.dart';
 import 'package:spotify_dribble/core/components/sections/player_section.dart';
 import 'package:spotify_dribble/core/components/sections/window_title_bar.dart';
 import 'package:spotify_dribble/core/components/widgets/section_button.dart';
+import 'package:spotify_dribble/core/models/page_data.dart';
 
 class HomePage extends StatefulWidget {
   final SpotifyUser? user;
@@ -86,8 +87,13 @@ class _NewHomePageState extends State<HomePage>with RouteAware{
                   iconData: Icons.music_note, 
                   title: "Playlists",
                   routeName: routeName,
-                  buttonRouteName: 'playlists',
-                  onTap: (){}
+                  buttonRouteName: '/playlist',
+                  onTap: (){
+                    navigatorKey.currentState?.pushReplacementNamed('/playlist',arguments:PageData(user:widget.user));
+                    setState(() {
+                      currentPage='/playlist';
+                    });
+                  }
                 ),
               ]),
             ),

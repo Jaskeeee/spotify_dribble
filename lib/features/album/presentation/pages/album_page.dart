@@ -86,7 +86,7 @@ class _AlbumPageState extends State<AlbumPage> with RouteAware {
                               ArtistAvatar(
                                 artistId: album.artists[0].id,
                                 titleColor: Theme.of(context).colorScheme.primary,
-                              ),
+                                 ),
                               SizedBox(width:10),
                               Text(
                                 "${album.totalTracks} songs,",

@@ -14,6 +14,7 @@ class HeaderSection extends StatelessWidget {
     return Padding(
       padding: EdgeInsetsGeometry.fromLTRB(25,20,0,10),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Icon(
             iconData,

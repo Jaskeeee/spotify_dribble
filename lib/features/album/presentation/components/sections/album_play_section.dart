@@ -8,29 +8,28 @@ import 'package:spotify_dribble/features/album/presentation/components/widgets/a
 class AlbumPlaySection extends StatefulWidget {
   final List<String> ids;
   const AlbumPlaySection({super.key, required this.ids});
-
   @override
   State<AlbumPlaySection> createState() => _AlbumPlaySectionState();
 }
 
 class _AlbumPlaySectionState extends State<AlbumPlaySection> {
   bool shuffleState = false;
+  List<String> shuffleIds=[];
   @override
   Widget build(BuildContext context) {
     List<String> trackIds = widget.ids;
     return Row(
       children: [
-        AlbumPlayButton(ids: trackIds, shuffleState: shuffleState),
+        AlbumPlayButton(ids:shuffleState?shuffleIds:trackIds, shuffleState: shuffleState),
         SizedBox(width: 20),
         AlbumShuffleButton(
           shuffleState: shuffleState,
           onPressed: () {
-            List<String> shuffledIds = widget.ids;
+            shuffleIds = widget.ids;
             setState(() {
               shuffleState = !shuffleState;
             });
-            shuffledIds.shuffle();
-            trackIds = shuffledIds;
+            shuffleIds.shuffle();
           },
         ),
         SizedBox(width: 20),

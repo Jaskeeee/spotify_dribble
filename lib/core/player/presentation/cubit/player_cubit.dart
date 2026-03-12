@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spotify_dribble/core/error/spotify_error.dart';
 import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/domain/model/playback_state.dart';
 import 'package:spotify_dribble/core/player/domain/model/player_enums.dart';
@@ -12,14 +11,57 @@ class PlayerCubit extends Cubit<PlayerStates>{
   PlayerCubit({
     required this.spotifyPlayerRepo,
   }):super(PlayerInitial()){
-    _syncSpotifyd();
+    checkSpotifyd();
+    // _syncSpotifyd();
+    // syncSpotifyd();
+    syncWithSpotifyd();
   }
+
+  Future<void> checkSpotifyd()async{
+    await spotifyPlayerRepo.checkSpotifyd();
+    await _syncSpotifyd();
+  }
+
+  // Note: because I know my forgetful ass will get confused:
+  // the logic for syncing the playback is as follows:
+  // 1. We have to perform a sanity check for spotifyd, refer to logic in Emma
+  // 2. after the sanity check it has to be pinged as the active device, ONLY when no other device has active playback on it
+  // 3. the problem about syncing the "currentPlayer" via MPRIS is that it's only visible to MPRIS when a playback is active on it
+  // which means even if spotifyd is the active device in the eyes of the API, as long as there's no playback on it 
+  // the MPRIS will not detect it
+  // a potential solution might be trying to sync it either when the playback state is fetched
+
+
+  Future<void> syncSpotifyd()async{
+    emit(PlayerLoading());
+    try{
+      await spotifyPlayerRepo.checkSpotifyd();
+    }
+    catch(e){
+      emit(PlayerError(message:e.toString()));
+    }
+  }
+
+  Future<void> transferTospotifyd()async{
+    try{
+      await spotifyPlayerRepo.transferTospotifyd();
+      await Future.delayed(Duration(seconds:2));
+      await getPlaybackState();
+    }
+    catch(e){
+      emit(PlayerError(message:e.toString()));
+    }
+  }
+
 
   Future<void> _syncSpotifyd()async{
     try{
       await spotifyPlayerRepo.syncDevice();
       final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
       emit(PlayerLoaded(playbackState: playbackState));
+      await Future.delayed(Duration(milliseconds:500));
+      syncWithSpotifyd();
+      await spotifyPlayerRepo.getPlayerForMPRIS();
     }
     catch(e){
       emit(PlayerError(message:e.toString()));
@@ -36,6 +78,29 @@ class PlayerCubit extends Cubit<PlayerStates>{
     }
   }
 
+  Future<void> syncWithSpotifyd()async{
+    try{
+      spotifyPlayerRepo.listenToSpotifyd().listen((log)async{
+        if(log.contains("loaded")){
+          // await getPlaybackState();
+          await spotifyPlayerRepo.getPlayerForMPRIS();
+        }
+
+        if(log.contains("active device is <>")){
+          await transferTospotifyd();
+        }
+      },
+      onError:(e)=>emit(PlayerError(message:e.toString()))
+      );
+    }
+    catch(e){
+      emit(PlayerError(message: e.toString()));
+    }
+  }
+
+
+
+
   Future<void> syncPlayback(Duration callbackDelay)async{
     if(timer!=null){
       timer!.cancel();
@@ -48,6 +113,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void> getPlaybackState()async{
     try{
       final PlaybackState? playbackState = await spotifyPlayerRepo.getPlaybackState();
+      await spotifyPlayerRepo.getPlayerForMPRIS();
       if(playbackState!=null && playbackState.playerItem!=null && playbackState.playerItem!.isTrack && playbackState.isPlaying){
         final int trackDuration = playbackState.playerItem!.track!.durationMs-5000;
         final int trackProgress = trackDuration-playbackState.progressMs;
@@ -134,6 +200,7 @@ class PlayerCubit extends Cubit<PlayerStates>{
   Future<void>startPlayback({required List<String> uris,String? deviceId})async{
     emit(PlayerLoading());
     try{
+      // idkAnymore();
       if(timer!=null){
         timer!.cancel();
       }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:spotify_dribble/core/auth/data/spotify_oauth_pkce.dart';
 import 'package:spotify_dribble/core/components/sections/available_devices_pop_up.dart';
 import 'package:spotify_dribble/core/components/sections/playback_section.dart';
 import 'package:spotify_dribble/core/components/sections/volume_pop_up.dart';
 import 'package:spotify_dribble/core/components/widgets/common_icon_button.dart';
 import 'package:spotify_dribble/core/components/widgets/loading_tile_widget.dart';
+import 'package:spotify_dribble/core/player/data/spotify_player_repo.dart';
 import 'package:spotify_dribble/core/player/presentation/components/widgets/pause_play_button.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_cubit.dart';
 import 'package:spotify_dribble/core/player/presentation/cubit/player_states.dart';
@@ -18,6 +20,8 @@ class PlayerSection extends StatefulWidget {
 }
 
 class _PlayerSectionState extends State<PlayerSection> {
+  final SpotifyOauthPkce spotifyOauthPkce = SpotifyOauthPkce();
+  final SpotifyPlayerRepo spotifyPlayerRepo = SpotifyPlayerRepo();
   double sliderValue = 0;
 
   @override
@@ -70,7 +74,10 @@ class _PlayerSectionState extends State<PlayerSection> {
                   activeDevice: state.playbackState?.device,
                 ),
                 SizedBox(width: 20),
-                Icon(Icons.menu, size: 25),
+                IconButton(
+                  icon:Icon(Icons.menu, size: 25),
+                  onPressed: ()async=>spotifyOauthPkce.logOut(),
+                ),
                 SizedBox(width: 20),
                 VolumePopUp(
                   volume: state.playbackState?.device.volumePercent ?? 50,

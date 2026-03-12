@@ -6,6 +6,7 @@ import 'package:spotify_dribble/core/player/presentation/pages/player_display_pa
 import 'package:spotify_dribble/features/album/presentation/pages/album_page.dart';
 import 'package:spotify_dribble/features/artist/presentation/pages/artist_page.dart';
 import 'package:spotify_dribble/features/home/presentation/pages/browse_page.dart';
+import 'package:spotify_dribble/features/playlist/presentation/pages/user_playlists.dart';
 
 class AppNavigator extends StatefulWidget {
   final SpotifyUser? user;
@@ -39,6 +40,8 @@ class _AppNavigatorState extends State<AppNavigator> {
                 return PlayerDisplayPage();
               case ('/artist'):
                 return ArtistPage(pageData: pageData);
+              case ('/playlist'):
+                return UserPlaylists(pageData: pageData);
               default:
                 return BrowsePage(pageData: pageData);
             }

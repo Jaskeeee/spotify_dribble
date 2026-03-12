@@ -16,7 +16,7 @@ class UserLikedSongs extends StatefulWidget {
 
 class _UserLikedSongsState extends State<UserLikedSongs> {
   late final ScrollController scrollController;
-  int offset=0;
+  late int offset;
   final int limit=50;
   bool isScrolling = false;
   List<Track> likedSongs = [];
@@ -31,6 +31,8 @@ class _UserLikedSongsState extends State<UserLikedSongs> {
 
   @override
   void initState() {
+    offset=0;
+    likedSongs=[];
     context.read<TrackCubit>().getUserSavedTracks(limit:50,offset:offset);
     scrollController = ScrollController();
     scrollController.addListener(handleScrollEnd);

@@ -153,7 +153,10 @@ class _PlayerDisplayPageState extends State<PlayerDisplayPage>
                               HoverTitle(
                                 title: track.album.name, 
                                 fontSize: 25, 
-                                onTap: ()=>print("get pranked idiot"), 
+                                onTap: (){
+                                  // final PageData pageData = PageData(trackAlbum:track.album);
+                                  // Navigator.pushReplacementNamed(context,'/album',arguments:pageData);
+                                }, 
                                 color: Theme.of(context).colorScheme.primary,
                                 weight: FontWeight.bold,
                                 overflow: TextOverflow.ellipsis,
@@ -176,7 +179,7 @@ class _PlayerDisplayPageState extends State<PlayerDisplayPage>
                                     spreadRadius: 10,
                                     blurRadius: 20,
                                     blurStyle: BlurStyle.normal,
-                                    color: Theme.of(context).colorScheme.primary
+                                    color: Theme.of(context).colorScheme.secondary
                                         .withValues(alpha: 0.2),
                                   ),
                                 ],
@@ -239,13 +242,15 @@ class _PlayerDisplayPageState extends State<PlayerDisplayPage>
                                     ],
                                   );
                                 } else {
+                                  final ArtistSimplified artist = track.artists[index];
+                                  final PageData pageData = PageData(artistSimplified: artist);
                                   return Row(
                                     children: [
                                       SizedBox(width:5),
                                       HoverTitle(
                                         title: artists[index],
                                         fontSize: 16,
-                                        onTap: () => print("get a like retard"),
+                                        onTap: () => Navigator.pushNamed(context, '/artist',arguments:pageData),
                                         color: Theme.of(
                                           context,
                                         ).colorScheme.primary,
